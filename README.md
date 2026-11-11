@@ -1,10 +1,9 @@
-# Carrasco English
+# Daily English
 
-App pessoal para ficar fluente em inglês falando com um tutor de IA brutalmente sincero.
+Leitor pessoal de notícias de hoje para aprender inglês.
 
-- **Falar**: conversa por voz com o Gemini em cenários (papo livre, turista na BellaJeri, entrevista de TI, reunião de IA, viagem, personagem). Corrige na hora e manda repetir.
-- **Revisar**: cada erro vira cartão de revisão espaçada (FSRS).
-- **Ler**: gera textos no seu nível ou analisa letras, cenas e artigos colados, com tradução e vocabulário.
-- **Progresso**: minutos falados por dia, sequência e erros que mais se repetem.
+- **Notícias:** o Gemini busca no Google as notícias das últimas 48h por tema (IA, mundo, Brasil, rap, filmes, esportes...) ou pela busca livre, e reescreve cada uma no seu nível (B1/B2/C1), com tradução por frase, vocabulário, perguntas e links das fontes.
+- **Revisar:** palavras e frases salvas viram cartões de revisão espaçada (FSRS).
+- **Progresso:** notícias lidas por dia, sequência e palavras salvas.
 
-Roda 100% no navegador (GitHub Pages). A chave do Gemini e os dados ficam salvos só no aparelho.
+Roda 100% no navegador (GitHub Pages). A chave do Gemini e os dados ficam só no aparelho.

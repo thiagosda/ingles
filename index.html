@@ -6,26 +6,26 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Carrasco">
+<meta name="apple-mobile-web-app-title" content="Daily English">
 <meta name="theme-color" content="#0c0c10">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
-<title>Carrasco English</title>
+<title>Daily English</title>
 <style>
 :root{
   --bg:#0c0c10; --panel:#16161d; --panel2:#1e1e27; --line:#2a2a36;
-  --text:#f2f2f5; --muted:#9a9aab; --red:#ff3b3b; --red2:#c41d1d;
+  --text:#f2f2f5; --muted:#9a9aab; --red:#ff3b3b;
   --green:#3ddc84; --yellow:#ffc53d; --blue:#5aa9ff;
   --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--text);
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);
   font:16px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;overscroll-behavior:none}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 input,textarea,select{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);
   border-radius:12px;padding:12px;width:100%;outline:none;font-size:16px}
-textarea{resize:vertical;min-height:120px}
+textarea{resize:vertical;min-height:110px}
 input:focus,textarea:focus,select:focus{border-color:var(--red)}
 header{position:fixed;top:0;left:0;right:0;z-index:5;padding:calc(var(--sat) + 10px) 16px 10px;
   display:flex;align-items:center;justify-content:space-between;background:rgba(12,12,16,.92);
@@ -43,55 +43,58 @@ nav.tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;g
 nav.tabbar button .ic{font-size:21px;line-height:1}
 nav.tabbar button.active{color:var(--text)}
 nav.tabbar .badge{background:var(--red);color:#fff;border-radius:99px;font-size:10px;padding:0 5px;margin-left:2px}
-h2{font-size:22px;margin:4px 0 12px}
-h3{font-size:15px;margin:18px 0 8px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+h2{font-size:22px;margin:4px 0 4px}
+h3{font-size:14px;margin:20px 0 8px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
 .muted{color:var(--muted)} .small{font-size:13px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:12px;
   background:var(--panel2);border:1px solid var(--line);font-weight:600}
 .btn.primary{background:var(--red);border-color:var(--red);color:#fff}
 .btn.block{width:100%}
-.btn:disabled{opacity:.5}
+.btn.sm{padding:7px 11px;font-size:14px}
 .row{display:flex;gap:8px;align-items:center}
 .row > *{flex:1}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{padding:9px 12px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);font-size:14px}
 .chip.on{background:var(--red);border-color:var(--red);color:#fff}
-/* Chat */
-#chat{display:flex;flex-direction:column;gap:10px;padding-bottom:210px}
-.msg{max-width:88%;padding:10px 12px;border-radius:16px;word-wrap:break-word}
-.msg .t{white-space:pre-wrap}
-.seg-en{color:#8fc8ff;font-weight:600}
-.msg.ai{background:var(--panel2);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
-.msg.me{background:#2a1416;border:1px solid #4a1d21;align-self:flex-end;border-bottom-right-radius:4px}
-.msg .tools{display:flex;gap:12px;margin-top:6px;font-size:13px;color:var(--muted)}
-.msg .tools button{color:var(--muted);padding:2px 0}
-.msg .pt{margin-top:6px;font-size:14px;color:var(--muted);display:none}
-.msg .pt.show{display:block}
-.fix{margin-top:8px;padding-top:8px;border-top:1px dashed #5a2a2e;font-size:14px}
-.fix .right{color:var(--green);font-weight:600}
-.fix .err{margin-top:4px}
-.bad{color:#ff8a8a;text-decoration:line-through;text-decoration-color:rgba(255,80,80,.7)}
-.okmark{color:var(--green);font-size:13px;margin-top:6px}
-.dock{position:fixed;left:0;right:0;bottom:calc(var(--sab) + 62px);z-index:4;padding:10px 16px 12px;
-  background:linear-gradient(to top,var(--bg) 70%,rgba(12,12,16,0));}
-.dock-inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:8px}
-#mic{width:84px;height:84px;border-radius:50%;background:var(--red);color:#fff;font-size:34px;
-  box-shadow:0 6px 30px rgba(255,59,59,.35);display:flex;align-items:center;justify-content:center;position:relative}
-#mic.rec{background:#fff;color:var(--red);animation:pulse 1.2s infinite}
-#mic.busy{background:var(--panel2);color:var(--muted);box-shadow:none}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,59,59,.6)}70%{box-shadow:0 0 0 22px rgba(255,59,59,0)}100%{box-shadow:0 0 0 0 rgba(255,59,59,0)}}
-#micState{font-size:13px;color:var(--muted);min-height:18px;text-align:center}
-.typebar{display:flex;gap:8px;width:100%}
-.typebar input{padding:10px 12px}
-.typebar .btn{padding:10px 14px}
-.level{height:4px;width:120px;background:var(--panel2);border-radius:4px;overflow:hidden}
-.level i{display:block;height:100%;width:0;background:var(--red);transition:width .08s}
+.chips.scroll{flex-wrap:nowrap;overflow-x:auto;margin:0 -16px;padding:2px 16px 6px;scrollbar-width:none}
+.chips.scroll::-webkit-scrollbar{display:none}
+.chips.scroll .chip{flex:0 0 auto}
 .spin{display:inline-block;width:16px;height:16px;border:2px solid var(--muted);border-top-color:transparent;border-radius:50%;animation:sp 0.8s linear infinite;vertical-align:-3px}
 @keyframes sp{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:28px 10px;color:var(--muted)}
+/* News list */
+.news{display:block;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+.news .hl{font-size:17px;font-weight:700;line-height:1.3}
+.news .sm{font-size:14px;color:var(--muted);margin-top:6px}
+.news .meta{font-size:12px;color:var(--muted);margin-top:8px;display:flex;gap:8px;align-items:center}
+.news.read{opacity:.6}
+.news.read .hl::after{content:" ✓";color:var(--green)}
+.lvl{font-size:12px;font-weight:700;color:var(--yellow)}
+/* Article */
+.art-title{font-size:23px;font-weight:800;line-height:1.25;margin:6px 0 4px}
+.sent{padding:10px 0;border-bottom:1px solid var(--line)}
+.sent:last-child{border-bottom:0}
+.sent .en{font-size:18px;line-height:1.6}
+.sent .en span{border-radius:4px}
+.sent .en span.w{cursor:pointer}
+.sent .en span.sel{background:#4a1d21}
+.sent .en span.voc{border-bottom:2px dotted var(--yellow)}
+.sent .pt{display:none;color:var(--muted);font-size:14px;margin-top:4px}
+.sent .pt.show{display:block}
+.sent .acts{display:flex;gap:16px;margin-top:4px;font-size:13px;color:var(--muted)}
+.sent .acts button{color:var(--muted)}
+.voc-item{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.voc-item:last-child{border-bottom:0}
+.q{padding:10px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0}
+.q .a{display:none;color:var(--green);font-size:14px;margin-top:4px}
+.q .a.show{display:block}
+.src a{display:block;padding:6px 0;font-size:14px;color:var(--blue);text-decoration:none;word-break:break-word}
 /* Review */
 .flash{min-height:230px;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:10px}
-.flash .front{font-size:20px;font-weight:600}
+.flash .front{font-size:22px;font-weight:700}
+.flash .ctx{font-size:15px;color:var(--muted);font-style:italic}
 .flash .back{font-size:19px;color:var(--green);font-weight:600}
 .flash .note{font-size:14px;color:var(--muted)}
 .flash .tag{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
@@ -100,20 +103,6 @@ h3{font-size:15px;margin:18px 0 8px;color:var(--muted);text-transform:uppercase;
 .grades button small{font-weight:500;font-size:11px;opacity:.85}
 .g1{background:#3a1416;color:#ff8080}.g2{background:#3a2e12;color:var(--yellow)}
 .g3{background:#123a24;color:var(--green)}.g4{background:#12283a;color:var(--blue)}
-/* Reader */
-.sent{padding:10px 0;border-bottom:1px solid var(--line)}
-.sent:last-child{border-bottom:0}
-.sent .en{font-size:17px;line-height:1.6}
-.sent .en span{border-radius:4px;padding:0 1px}
-.sent .en span.w{cursor:pointer}
-.sent .en span.w:active,.sent .en span.sel{background:#4a1d21}
-.sent .en span.voc{border-bottom:2px dotted var(--yellow)}
-.sent .pt{display:none;color:var(--muted);font-size:14px;margin-top:4px}
-.sent .pt.show{display:block}
-.sent .acts{display:flex;gap:14px;margin-top:4px;font-size:13px;color:var(--muted)}
-.sent .acts button{color:var(--muted)}
-.voc-item{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
-.voc-item:last-child{border-bottom:0}
 /* Progress */
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
@@ -136,78 +125,62 @@ h3{font-size:15px;margin:18px 0 8px;color:var(--muted);text-transform:uppercase;
   background:#2b2b36;border:1px solid var(--line);padding:10px 14px;border-radius:12px;font-size:14px;transition:all .25s;max-width:90%;text-align:center;pointer-events:none}
 #toast.show{opacity:1;transform:translateX(-50%)}
 label.f{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px}
-.empty{text-align:center;padding:30px 10px;color:var(--muted)}
 .steps{padding-left:20px;margin:6px 0}.steps li{margin:4px 0}
 a{color:var(--blue)}
+details summary{cursor:pointer;color:var(--muted);font-size:14px;padding:6px 0}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo">CARRASCO <b>ENGLISH</b></div>
-  <div class="pill" id="todayPill">🎙 0/10 min</div>
+  <div class="logo">DAILY <b>ENGLISH</b></div>
+  <div class="pill" id="todayPill">📰 0/2 hoje</div>
 </header>
 
 <main>
-  <!-- FALAR -->
-  <section class="view active" id="v-falar">
+  <!-- NOTÍCIAS -->
+  <section class="view active" id="v-noticias">
     <div id="setupNeeded" class="card" style="display:none">
       <b>Falta a chave do Gemini.</b>
       <p class="muted small">Ela é grátis e fica salva só neste aparelho.</p>
       <button class="btn primary block" data-go="ajustes">Configurar agora</button>
     </div>
-    <div id="scenarioBox">
-      <h2>Quem vai te humilhar hoje?</h2>
-      <div class="chips" id="scenarios"></div>
-      <div id="charBox" style="display:none;margin-top:10px">
-        <input id="charInput" placeholder="Ex: Shrek, Walter White, Michael Scott, Ron Weasley...">
+    <div id="newsHome">
+      <h2>Notícias de hoje</h2>
+      <p class="small muted" id="todayLabel" style="margin:0 0 12px"></p>
+      <div class="chips scroll" id="cats"></div>
+      <div class="row" style="margin:10px 0 14px">
+        <input id="searchInput" placeholder="Buscar notícias sobre... (ex: OpenAI, Lakers)" enterkeyhint="search">
+        <button class="btn primary" id="searchBtn" style="flex:0 0 auto">Buscar</button>
       </div>
-      <button class="btn primary block" id="startBtn" style="margin-top:14px">Começar</button>
-      <p class="muted small" style="margin-top:10px">Toque no microfone, fale em inglês, toque de novo para enviar. Se errar, ele corrige na hora e manda você repetir.</p>
+      <div id="newsList"></div>
+      <details style="margin-top:16px">
+        <summary>Colar um texto em inglês (letra, artigo...)</summary>
+        <textarea id="pasteInput" placeholder="Cole o texto aqui" style="margin-top:8px"></textarea>
+        <button class="btn block" id="pasteBtn" style="margin-top:8px">Analisar texto</button>
+      </details>
     </div>
-    <div id="chatWrap" style="display:none">
-      <div class="row" style="margin-bottom:10px">
-        <div class="small muted" id="sessionTitle"></div>
-        <button class="btn" id="endBtn" style="flex:0 0 auto;padding:8px 12px;font-size:14px">Encerrar</button>
-      </div>
-      <div id="chat"></div>
-    </div>
+    <div id="articleView" style="display:none"></div>
   </section>
 
   <!-- REVISAR -->
   <section class="view" id="v-revisar">
-    <h2>Revisão</h2>
+    <h2 style="margin-bottom:12px">Revisão</h2>
     <div id="reviewBox"></div>
-  </section>
-
-  <!-- LER -->
-  <section class="view" id="v-ler">
-    <h2>Ler e ouvir</h2>
-    <div class="card">
-      <label class="f" style="margin-top:0">Gerar texto no seu nível sobre:</label>
-      <div class="row">
-        <input id="genTopic" placeholder="Ex: agentes de IA, Jericoacoara, NBA...">
-        <button class="btn primary" id="genBtn" style="flex:0 0 auto">Gerar</button>
-      </div>
-      <label class="f">Ou cole uma letra de música, cena de filme, artigo...</label>
-      <textarea id="readInput" placeholder="Cole o texto em inglês aqui"></textarea>
-      <button class="btn block" id="analyzeBtn" style="margin-top:10px">Analisar texto</button>
-    </div>
-    <div id="readOut"></div>
   </section>
 
   <!-- PROGRESSO -->
   <section class="view" id="v-progresso">
-    <h2>Progresso</h2>
+    <h2 style="margin-bottom:12px">Progresso</h2>
     <div class="stats" id="statsGrid"></div>
-    <h3>Minutos falando (7 dias)</h3>
+    <h3>Notícias lidas (7 dias)</h3>
     <div class="card"><div class="bars" id="bars"></div></div>
-    <h3>Seus erros que mais se repetem</h3>
-    <div class="card" id="topErrors"></div>
+    <h3>Últimas palavras salvas</h3>
+    <div class="card" id="lastWords"></div>
   </section>
 
   <!-- AJUSTES -->
   <section class="view" id="v-ajustes">
-    <h2>Ajustes</h2>
+    <h2 style="margin-bottom:12px">Ajustes</h2>
     <div class="card">
       <b>Chave do Gemini (grátis)</b>
       <ol class="steps small muted">
@@ -222,40 +195,33 @@ a{color:var(--blue)}
       <select id="modelSelect"><option value="">Automático</option></select>
     </div>
     <div class="card">
-      <b>Tutor</b>
-      <label class="f">Modo</label>
-      <div class="chips" id="modeChips">
-        <button class="chip" data-mode="carrasco">🔥 Carrasco sem filtro</button>
-        <button class="chip" data-mode="gentil">🙂 Treinador gentil</button>
+      <b>Leitura</b>
+      <label class="f">Nível dos textos</label>
+      <div class="chips" id="levelChips">
+        <button class="chip" data-level="B1">B1 · mais fácil</button>
+        <button class="chip" data-level="B2">B2 · médio</button>
+        <button class="chip" data-level="C1">C1 · quase nativo</button>
       </div>
-      <label class="f">Idioma do professor</label>
-      <div class="chips" id="teachChips">
-        <button class="chip" data-teach="pt">🇧🇷 Explica em português</button>
-        <button class="chip" data-teach="en">🇺🇸 Só inglês (imersão)</button>
-      </div>
-      <p class="small muted" style="margin:6px 0 0">Em português, ele explica e xinga em PT, mas a frase certa e a pergunta vêm em inglês para você responder em inglês.</p>
-      <label class="f">Meta diária de fala (minutos)</label>
-      <input id="goalInput" type="number" min="1" max="120" inputmode="numeric">
+      <label class="f">Meta diária (notícias)</label>
+      <input id="goalInput" type="number" min="1" max="20" inputmode="numeric">
     </div>
     <div class="card">
       <b>Voz</b>
       <label class="f">Voz em inglês</label>
       <select id="voiceSelect"></select>
-      <label class="f">Voz em português</label>
-      <select id="voicePtSelect"></select>
       <label class="f">Velocidade: <span id="rateVal"></span></label>
       <input id="rateInput" type="range" min="0.6" max="1.2" step="0.05" style="padding:0">
       <button class="btn block" id="testVoiceBtn" style="margin-top:10px">Testar voz</button>
-      <p class="small muted">Dica: no iPhone, em Ajustes → Acessibilidade → Conteúdo Falado → Vozes → Inglês, baixe uma voz "Aprimorada" ou "Premium" para soar mais natural.</p>
+      <p class="small muted">Dica: no iPhone, em Ajustes → Acessibilidade → Conteúdo Falado → Vozes → Inglês, baixe uma voz "Aprimorada" ou "Premium".</p>
     </div>
     <div class="card">
       <b>Diagnóstico</b>
-      <p class="small muted">Últimas chamadas ao Gemini: modelo, tempo e erro. Se algo falhar, me manda print daqui.</p>
+      <p class="small muted">Últimas chamadas ao Gemini: modelo, tempo e erro. Se algo falhar, mande print daqui.</p>
       <div id="diagBox"></div>
     </div>
     <div class="card">
       <b>Backup</b>
-      <p class="small muted">Seus dados ficam só neste aparelho. Faça backup de vez em quando.</p>
+      <p class="small muted">Seus dados ficam só neste aparelho.</p>
       <div class="row">
         <button class="btn" id="exportBtn">Copiar backup</button>
         <button class="btn" id="importBtn">Restaurar</button>
@@ -267,22 +233,9 @@ a{color:var(--blue)}
   </section>
 </main>
 
-<div class="dock" id="dock" style="display:none">
-  <div class="dock-inner">
-    <div class="level" id="levelBar"><i></i></div>
-    <button id="mic" aria-label="Microfone">🎙</button>
-    <div id="micState">Toque para falar</div>
-    <div class="typebar">
-      <input id="typeInput" placeholder="Ou digite em inglês..." autocomplete="off">
-      <button class="btn" id="typeSend">➤</button>
-    </div>
-  </div>
-</div>
-
 <nav class="tabbar" id="tabbar">
-  <button data-tab="falar" class="active"><span class="ic">🎙</span>Falar</button>
+  <button data-tab="noticias" class="active"><span class="ic">📰</span>Notícias</button>
   <button data-tab="revisar"><span class="ic">🃏</span><span>Revisar<span class="badge" id="dueBadge" style="display:none"></span></span></button>
-  <button data-tab="ler"><span class="ic">📖</span>Ler</button>
   <button data-tab="progresso"><span class="ic">📈</span>Progresso</button>
   <button data-tab="ajustes"><span class="ic">⚙️</span>Ajustes</button>
 </nav>
@@ -296,17 +249,17 @@ a{color:var(--blue)}
 /* ================= Storage ================= */
 const LS = {
   get(k, d){ try{ const v = localStorage.getItem('ce_'+k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
-  set(k, v){ try{ localStorage.setItem('ce_'+k, JSON.stringify(v)); }catch(e){ toast('Não consegui salvar no aparelho'); } }
+  set(k, v){ try{ localStorage.setItem('ce_'+k, JSON.stringify(v)); }catch(e){ pruneCache(); try{ localStorage.setItem('ce_'+k, JSON.stringify(v)); }catch(e2){ toast('Não consegui salvar no aparelho'); } } },
+  del(k){ try{ localStorage.removeItem('ce_'+k); }catch(e){} }
 };
-const DEFAULTS = { apiKey:'', model:'', voiceURI:'', voicePtURI:'', mode:'carrasco', teach:'pt', rate:0.95, goal:10 };
+const DEFAULTS = { apiKey:'', model:'', voiceURI:'', rate:0.95, goal:2, level:'B1', think:{} };
 let S = Object.assign({}, DEFAULTS, LS.get('settings', {}));
-if((S.v || 1) < 2){ S.model = ''; S.think = {}; S.v = 2; LS.set('settings', S); }
+if((S.v || 1) < 3){ S.model = ''; S.think = {}; S.v = 3; if(!S.goal || S.goal > 20) S.goal = 2; LS.set('settings', S); }
 let cards = LS.get('cards', []);
-let errorsBank = LS.get('errors', []);
 let stats = LS.get('stats', {});
+let readIds = LS.get('readIds', {});
 const saveSettings = () => LS.set('settings', S);
 const saveCards = () => { LS.set('cards', cards); updateBadge(); };
-const saveErrors = () => LS.set('errors', errorsBank);
 const saveStats = () => LS.set('stats', stats);
 
 const $ = s => document.querySelector(s);
@@ -314,21 +267,21 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp
 const norm = s => String(s||'').toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ').trim();
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 const dayKey = (d = new Date()) => { const z = n => String(n).padStart(2,'0'); return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate()); };
-function today(){ const k = dayKey(); if(!stats[k]) stats[k] = { speak:0, turns:0, reviews:0, newCards:0 }; return stats[k]; }
+const hash = s => { let h = 0; for(let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+function today(){ const k = dayKey(); if(!stats[k]) stats[k] = { read:0, reviews:0, newCards:0, saved:0 }; return stats[k]; }
+function pruneCache(){
+  try{
+    const d = dayKey();
+    Object.keys(localStorage).filter(k => (k.startsWith('ce_news_') && !k.startsWith('ce_news_' + d)) || (k.startsWith('ce_art_') && !k.startsWith('ce_art_' + d))).forEach(k => localStorage.removeItem(k));
+  }catch(e){}
+}
 
 let toastT;
 function toast(msg, ms = 2600){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'), ms); }
 
 /* ================= Gemini ================= */
 const API = 'https://generativelanguage.googleapis.com/v1beta';
-const SAFETY = [
-  { category:'HARM_CATEGORY_HARASSMENT', threshold:'BLOCK_NONE' },
-  { category:'HARM_CATEGORY_HATE_SPEECH', threshold:'BLOCK_ONLY_HIGH' },
-  { category:'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold:'BLOCK_ONLY_HIGH' },
-  { category:'HARM_CATEGORY_DANGEROUS_CONTENT', threshold:'BLOCK_ONLY_HIGH' }
-];
 let modelsCache = null;
-
 async function apiError(r){
   let msg = '';
   try{ const j = await r.json(); msg = (j.error && j.error.message) || ''; }catch(e){}
@@ -339,7 +292,7 @@ function friendly(e){
   if(e && e.status === 429) return 'Limite grátis do Gemini atingido. Espere 1 minuto e tente de novo.';
   if(e && (e.status === 400 || e.status === 403) && /api key|API_KEY|permission/i.test(e.message)) return 'Chave do Gemini inválida ou sem permissão. Confira em Ajustes.';
   if(e && e.name === 'TypeError') return 'Sem conexão. Confira sua internet.';
-  return 'Erro: ' + ((e && e.message) || e);
+  return (e && e.message) || String(e);
 }
 async function listModels(){
   if(!S.apiKey) throw new Error('NOKEY');
@@ -355,7 +308,6 @@ async function listModels(){
 function rankModel(n){
   const m = n.match(/gemini-(\d+(?:\.\d+)?)/);
   let s = m ? parseFloat(m[1]) * 10 : 0;
-  // Speed first: flash-lite answers fastest and has the most generous free quota.
   if(/flash-lite/.test(n)) s += 30; else if(/flash/.test(n)) s += 5;
   if(/preview/.test(n)) s -= 4;
   if(/latest/.test(n)) s -= 1;
@@ -368,19 +320,22 @@ async function autoPickModel(exclude){
   if(!opts.length) throw new Error('Nenhum modelo gratuito disponível para sua chave.');
   S.model = opts[0]; saveSettings(); renderModelSelect(); return S.model;
 }
-function partsText(j){
+function readCandidate(j){
   const c = j && j.candidates && j.candidates[0];
   if(!c){ const br = j && j.promptFeedback && j.promptFeedback.blockReason; throw new Error(br ? 'Bloqueado pelo filtro do Gemini (' + br + ')' : 'Resposta vazia do Gemini'); }
   const parts = (c.content && c.content.parts) || [];
-  const t = parts.filter(p => p.text && !p.thought).map(p => p.text).join('');
-  if(!t) throw new Error(c.finishReason === 'SAFETY' ? 'O filtro do Gemini bloqueou a resposta. Tente de novo.' : 'Resposta vazia (' + (c.finishReason || '?') + ')');
-  return t;
+  const text = parts.filter(p => p.text && !p.thought).map(p => p.text).join('');
+  if(!text) throw new Error(c.finishReason === 'SAFETY' ? 'O filtro do Gemini bloqueou a resposta.' : 'Resposta vazia (' + (c.finishReason || '?') + ')');
+  const chunks = ((c.groundingMetadata && c.groundingMetadata.groundingChunks) || []).map(g => g.web).filter(Boolean);
+  return { text, chunks };
 }
+/* opt: system, schema (JSON via responseSchema), json (parse JSON from text), search (Google Search grounding), temperature, timeout */
 async function gemini(contents, opt = {}){
   if(!S.apiKey) throw new Error('NOKEY');
-  const body = { contents, safetySettings: SAFETY, generationConfig: { temperature: opt.temperature == null ? 0.9 : opt.temperature } };
+  const body = { contents, generationConfig: { temperature: opt.temperature == null ? 0.7 : opt.temperature } };
   if(opt.system) body.systemInstruction = { parts:[{ text: opt.system }] };
   if(opt.schema){ body.generationConfig.responseMimeType = 'application/json'; body.generationConfig.responseSchema = opt.schema; }
+  if(opt.search) body.tools = [{ google_search: {} }];
   const tried = new Set();
   S.think = S.think || {};
   for(let attempt = 0; attempt < 7; attempt++){
@@ -389,7 +344,7 @@ async function gemini(contents, opt = {}){
     if(level === 'none') delete body.generationConfig.thinkingConfig;
     else body.generationConfig.thinkingConfig = { thinkingLevel: level };
     const ctrl = new AbortController(), t0 = Date.now();
-    const timer = setTimeout(() => ctrl.abort(), opt.timeout || 45000);
+    const timer = setTimeout(() => ctrl.abort(), opt.timeout || 60000);
     let r;
     try{
       r = await fetch(API + '/models/' + encodeURIComponent(model) + ':generateContent', {
@@ -397,22 +352,23 @@ async function gemini(contents, opt = {}){
       });
     }catch(e){
       clearTimeout(timer);
-      const err = e.name === 'AbortError' ? new Error('O Gemini demorou demais (' + model + '). Tente de novo.') : e;
-      logDiag(model, Date.now() - t0, err.message); throw err;
+      const err = e.name === 'AbortError' ? new Error('O Gemini demorou demais. Tente de novo.') : e;
+      logDiag(model, Date.now() - t0, err.message, opt.search); throw err;
     }
     clearTimeout(timer);
     if(r.ok){
       let out;
-      try{ const t = partsText(await r.json()); out = opt.schema ? parseJSON(t) : t.trim(); }
-      catch(e){ logDiag(model, Date.now() - t0, e.message); throw e; }
-      logDiag(model, Date.now() - t0, 'ok');
+      try{
+        const { text, chunks } = readCandidate(await r.json());
+        const value = (opt.schema || opt.json) ? parseJSON(text) : text.trim();
+        out = opt.meta ? { value, chunks } : value;
+      }catch(e){ logDiag(model, Date.now() - t0, e.message, opt.search); throw e; }
+      logDiag(model, Date.now() - t0, 'ok', opt.search);
       return out;
     }
     const err = await apiError(r);
-    logDiag(model, Date.now() - t0, err.status + ' ' + err.message.slice(0, 160));
-    if(err.status === 400 && /thinking/i.test(err.message)){
-      S.think[model] = level === 'minimal' ? 'low' : 'none'; saveSettings(); continue;
-    }
+    logDiag(model, Date.now() - t0, err.status + ' ' + err.message.slice(0, 160), opt.search);
+    if(err.status === 400 && /thinking/i.test(err.message)){ S.think[model] = level === 'minimal' ? 'low' : 'none'; saveSettings(); continue; }
     const quotaZero = err.status === 429 && /limit:\s*0\b/.test(err.message);
     const badModel = err.status === 404 || quotaZero ||
       (err.status === 400 && /not (supported|found|available)|does not support|unsupported/i.test(err.message) && !/api key/i.test(err.message));
@@ -426,139 +382,57 @@ async function gemini(contents, opt = {}){
   }
   throw new Error('Nenhum modelo gratuito funcionou com sua chave.');
 }
+function parseJSON(t){
+  const s = String(t).replace(/^```(?:json)?\s*|\s*```$/g, '').trim();
+  try{ return JSON.parse(s); }catch(e){}
+  const a = s.indexOf('['), o = s.indexOf('{');
+  const start = a >= 0 && (o < 0 || a < o) ? a : o;
+  const end = Math.max(s.lastIndexOf(']'), s.lastIndexOf('}'));
+  if(start >= 0 && end > start){ try{ return JSON.parse(s.slice(start, end + 1)); }catch(e){} }
+  throw new Error('O Gemini respondeu num formato inválido. Tente de novo.');
+}
 let diag = LS.get('diag', []);
-function logDiag(model, ms, status){
-  diag.unshift({ at: new Date().toLocaleTimeString('pt-BR'), model, ms, status });
-  diag = diag.slice(0, 12); LS.set('diag', diag);
-  const box = document.getElementById('diagBox'); if(box) renderDiag();
+function logDiag(model, ms, status, search){
+  diag.unshift({ at: new Date().toLocaleTimeString('pt-BR'), model: model + (search ? ' + busca' : ''), ms, status });
+  diag = diag.slice(0, 12); LS.set('diag', diag); renderDiag();
 }
 function renderDiag(){
   const box = document.getElementById('diagBox'); if(!box) return;
   box.innerHTML = diag.length
-    ? diag.map(d => `<div class="errrow"><div><b>${esc(d.at)}</b> · ${esc(d.model)}<div class="small ${d.status === 'ok' ? '' : 'muted'}" style="${d.status === 'ok' ? 'color:var(--green)' : 'color:#ff8a8a'}">${esc(d.status)}</div></div><span class="cnt">${(d.ms / 1000).toFixed(1)}s</span></div>`).join('')
+    ? diag.map(d => `<div class="errrow"><div><b>${esc(d.at)}</b> · ${esc(d.model)}<div class="small" style="color:${d.status === 'ok' ? 'var(--green)' : '#ff8a8a'}">${esc(d.status)}</div></div><span class="cnt">${(d.ms / 1000).toFixed(1)}s</span></div>`).join('')
     : '<div class="small muted">Nenhuma chamada ainda.</div>';
 }
-function parseJSON(t){
-  try{ return JSON.parse(t); }catch(e){}
-  const m = t.match(/\{[\s\S]*\}/);
-  if(m){ try{ return JSON.parse(m[0]); }catch(e){} }
-  throw new Error('O Gemini respondeu num formato inválido. Tente de novo.');
-}
 
-/* ================= Voice out (TTS) ================= */
+/* ================= Voice (English TTS) ================= */
 const TTS = {
-  voices: [], voicesPt: [], unlocked: false,
+  voices: [], unlocked: false,
   load(){
-    try{
-      const all = speechSynthesis.getVoices();
-      this.voices = all.filter(v => /^en[-_]/i.test(v.lang));
-      const br = all.filter(v => /^pt[-_]BR/i.test(v.lang));
-      this.voicesPt = br.length ? br : all.filter(v => /^pt/i.test(v.lang));
-    }catch(e){ this.voices = []; this.voicesPt = []; }
+    try{ this.voices = speechSynthesis.getVoices().filter(v => /^en[-_]/i.test(v.lang)); }catch(e){ this.voices = []; }
     renderVoiceSelect();
   },
-  pickFrom(pool, uri, names){
-    if(uri){ const v = pool.find(v => v.voiceURI === uri); if(v) return v; }
-    return pool.find(v => /premium/i.test(v.name)) || pool.find(v => /enhanced|aprimorad/i.test(v.name)) ||
-           pool.find(v => names.test(v.name)) || pool[0] || null;
-  },
   best(){
-    const us = this.voices.filter(v => /en[-_]US/i.test(v.lang));
-    return this.pickFrom(us.length ? us : this.voices, S.voiceURI, /samantha|ava|allison|evan|nathan|zoe/i);
+    if(S.voiceURI){ const v = this.voices.find(v => v.voiceURI === S.voiceURI); if(v) return v; }
+    const us = this.voices.filter(v => /en[-_]US/i.test(v.lang)), pool = us.length ? us : this.voices;
+    return pool.find(v => /premium/i.test(v.name)) || pool.find(v => /enhanced|aprimorad/i.test(v.name)) ||
+           pool.find(v => /samantha|ava|allison|evan|nathan|zoe/i.test(v.name)) || pool[0] || null;
   },
-  bestPt(){ return this.pickFrom(this.voicesPt, S.voicePtURI, /luciana|felipe|fernanda/i); },
   unlock(){
     if(this.unlocked || !('speechSynthesis' in window)) return;
     try{ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); this.unlocked = true; }catch(e){}
   },
-  speak(text, onend){ this.speakSegs([{ lang:'en', text }], onend); },
-  speakSegs(segs, onend){
-    if(!('speechSynthesis' in window)){ onend && onend(); return; }
+  speak(text, rate){
+    if(!('speechSynthesis' in window)) return;
     try{ speechSynthesis.cancel(); }catch(e){}
-    const list = (segs || []).map(s => ({ lang: s.lang === 'pt' ? 'pt' : 'en', text: String(s.text || '').replace(/[*_#`>\[\]]/g, '').replace(/\s+/g, ' ').trim() })).filter(s => s.text);
-    if(!list.length){ onend && onend(); return; }
-    let done = false; const fin = () => { if(!done){ done = true; onend && onend(); } };
-    list.forEach((s, i) => {
-      const u = new SpeechSynthesisUtterance(s.text);
-      const v = s.lang === 'pt' ? this.bestPt() : this.best();
-      if(v){ u.voice = v; u.lang = v.lang; } else u.lang = s.lang === 'pt' ? 'pt-BR' : 'en-US';
-      u.rate = s.lang === 'pt' ? Math.max(1, S.rate || 1) : (S.rate || 1);
-      if(i === list.length - 1){ u.onend = fin; u.onerror = fin; }
-      speechSynthesis.speak(u);
-    });
+    const clean = String(text).replace(/[*_#`>\[\]]/g, '').replace(/\s+/g, ' ').trim(); if(!clean) return;
+    const u = new SpeechSynthesisUtterance(clean), v = this.best();
+    if(v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-US';
+    u.rate = rate || S.rate || 1;
+    speechSynthesis.speak(u);
   },
   stop(){ try{ speechSynthesis.cancel(); }catch(e){} }
 };
 if('speechSynthesis' in window){ TTS.load(); speechSynthesis.onvoiceschanged = () => TTS.load(); }
 document.addEventListener('click', () => TTS.unlock(), { capture:true });
-
-/* ================= Voice in (recording -> WAV) ================= */
-const Rec = {
-  ctx:null, stream:null, src:null, proc:null, chunks:[], rate:48000, t0:0, recording:false,
-  async ensure(){
-    if(!this.ctx){ const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC(); }
-    if(this.ctx.state !== 'running'){ try{ await this.ctx.resume(); }catch(e){} }
-    if(!this.stream || !this.stream.active){
-      if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('Este navegador não libera o microfone. Use o Safari.');
-      this.stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:true, channelCount:1 } });
-      this.src = this.ctx.createMediaStreamSource(this.stream);
-    }
-    this.rate = this.ctx.sampleRate;
-  },
-  async start(){
-    await this.ensure();
-    this.chunks = [];
-    const proc = this.ctx.createScriptProcessor(4096, 1, 1);
-    proc.onaudioprocess = e => {
-      if(!this.recording) return;
-      const d = e.inputBuffer.getChannelData(0);
-      this.chunks.push(new Float32Array(d));
-      let sum = 0; for(let i = 0; i < d.length; i += 16) sum += d[i] * d[i];
-      const rms = Math.sqrt(sum / (d.length / 16));
-      $('#levelBar i').style.width = Math.min(100, rms * 400) + '%';
-    };
-    this.src.connect(proc); proc.connect(this.ctx.destination);
-    this.proc = proc; this.recording = true; this.t0 = Date.now();
-  },
-  stop(){
-    this.recording = false;
-    if(this.proc){ try{ this.src.disconnect(this.proc); this.proc.disconnect(); }catch(e){} this.proc = null; }
-    $('#levelBar i').style.width = '0';
-    let len = 0; this.chunks.forEach(c => len += c.length);
-    const all = new Float32Array(len); let o = 0; this.chunks.forEach(c => { all.set(c, o); o += c.length; });
-    this.chunks = [];
-    const seconds = len / this.rate;
-    let sum = 0; for(let i = 0; i < all.length; i += 8) sum += all[i] * all[i];
-    const rms = all.length ? Math.sqrt(sum / (all.length / 8)) : 0;
-    const pcm = downsample(all, this.rate, 16000);
-    return { base64: wavBase64(pcm, 16000), seconds, rms };
-  },
-  release(){
-    if(this.stream){ this.stream.getTracks().forEach(t => t.stop()); this.stream = null; this.src = null; }
-  }
-};
-function downsample(buf, inRate, outRate){
-  if(outRate >= inRate) return buf;
-  const ratio = inRate / outRate, len = Math.floor(buf.length / ratio), out = new Float32Array(len);
-  for(let i = 0; i < len; i++){
-    const a = Math.floor(i * ratio), b = Math.min(buf.length, Math.floor((i + 1) * ratio));
-    let s = 0; for(let j = a; j < b; j++) s += buf[j];
-    out[i] = b > a ? s / (b - a) : 0;
-  }
-  return out;
-}
-function wavBase64(samples, rate){
-  const buf = new ArrayBuffer(44 + samples.length * 2), v = new DataView(buf);
-  const ws = (o, s) => { for(let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
-  ws(0,'RIFF'); v.setUint32(4, 36 + samples.length * 2, true); ws(8,'WAVE'); ws(12,'fmt ');
-  v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,rate,true);
-  v.setUint32(28,rate*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true); ws(36,'data'); v.setUint32(40, samples.length * 2, true);
-  let o = 44;
-  for(let i = 0; i < samples.length; i++, o += 2){ const s = Math.max(-1, Math.min(1, samples[i])); v.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7FFF, true); }
-  const bytes = new Uint8Array(buf); let bin = '';
-  for(let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-  return btoa(bin);
-}
 
 /* ================= FSRS (spaced repetition) ================= */
 const FSRS = (() => {
@@ -603,25 +477,16 @@ const FSRS = (() => {
   return { schedule, label };
 })();
 
-/* ================= Cards & errors ================= */
+/* ================= Cards ================= */
 function addCard(c){
   const key = norm(c.type + '|' + c.front + '|' + c.back);
   if(cards.some(x => norm(x.type + '|' + x.front + '|' + x.back) === key)) return false;
   cards.push(Object.assign({ id: uid(), created: Date.now(), state:'new', due: Date.now(), reps:0, lapses:0 }, c));
+  const t = today(); t.saved = (t.saved || 0) + 1; saveStats();
   saveCards(); return true;
 }
-function logError(e){
-  if(!e || !e.wrong || !e.right || norm(e.wrong) === norm(e.right)) return;
-  const k = norm(e.right);
-  const ex = errorsBank.find(x => norm(x.right) === k || norm(x.wrong) === norm(e.wrong));
-  if(ex){ ex.count++; ex.last = Date.now(); ex.wrong = e.wrong; }
-  else errorsBank.push({ wrong: e.wrong, right: e.right, why: e.why_pt || '', count: 1, last: Date.now() });
-  saveErrors();
-  addCard({ type:'fix', front: e.wrong, back: e.right, note: e.why_pt || '', src:'conversa' });
-}
 function dueCards(now = Date.now()){
-  const t = today();
-  const newLeft = Math.max(0, 25 - (t.newCards || 0));
+  const newLeft = Math.max(0, 25 - (today().newCards || 0));
   const due = cards.filter(c => c.state !== 'new' && c.due <= now).sort((a,b) => a.due - b.due);
   const fresh = cards.filter(c => c.state === 'new').sort((a,b) => a.created - b.created).slice(0, newLeft);
   return due.concat(fresh);
@@ -631,236 +496,239 @@ function updateBadge(){
   if(n){ b.textContent = n > 99 ? '99+' : n; b.style.display = ''; } else b.style.display = 'none';
 }
 
-/* ================= Prompts ================= */
-const SCENARIOS = [
-  { id:'livre', label:'💬 Papo livre', title:'Papo livre',
-    desc:'Free conversation. Ask about his life: Computer Engineering at university, his family tourism agency in Jericoacoara, his AI projects, music (rap), movies, his weekend, his plans.' },
-  { id:'turista', label:'🏖 Turista na BellaJeri', title:'Turista na BellaJeri',
-    desc:'Roleplay: you are an impatient, demanding American tourist in Jericoacoara, Brazil, booking a buggy tour (Lagoa do Paraíso, Pedra Furada, sunset dune, Tatajuba) with his agency BellaJeri Tour. Ask about prices, schedule, what is included, payment, pickup at the hotel, safety, kids. Stay in character as the tourist while still correcting his English.' },
-  { id:'entrevista', label:'💼 Entrevista de TI', title:'Entrevista de emprego',
-    desc:'Roleplay: you are a tough interviewer at an international tech company interviewing him for an IT support / AI internship. Ask ONE typical interview question at a time (tell me about yourself, strengths, a problem you solved, why AI, etc.). Judge both content and English.' },
-  { id:'tech', label:'🤖 Reunião de IA', title:'Reunião técnica de IA',
-    desc:'Roleplay: a tech meeting. He must explain AI concepts (LLMs, agents, RAG, APIs) and the apps he is building. Push him to explain clearly and use correct technical English.' },
-  { id:'viagem', label:'✈️ Viagem', title:'Viagem',
-    desc:'Roleplay travel situations abroad, switching every few turns: airport immigration officer, hotel check-in, ordering at a restaurant, asking for directions, a store.' },
-  { id:'personagem', label:'🎬 Personagem', title:'Personagem',
-    desc:'' }
+/* ================= News ================= */
+const CATS = [
+  { id:'ia', label:'🤖 IA & Tech', q:'artificial intelligence, AI companies (OpenAI, Google, Anthropic, Meta, Nvidia) and the tech industry' },
+  { id:'mundo', label:'🌎 Mundo', q:'the biggest world news' },
+  { id:'brasil', label:'🇧🇷 Brasil', q:'Brazil (as covered by major international and Brazilian outlets)' },
+  { id:'negocios', label:'💰 Negócios', q:'business, markets, economy and startups' },
+  { id:'esportes', label:'🏀 Esportes', q:'sports: NBA, football/soccer, F1 and UFC' },
+  { id:'musica', label:'🎤 Rap & Música', q:'music and hip-hop (artists like Kanye West, Kendrick Lamar, Drake, Travis Scott, Don Toliver)' },
+  { id:'cinema', label:'🎬 Filmes & Séries', q:'movies, TV series and streaming' },
+  { id:'viagem', label:'✈️ Viagem', q:'travel, airlines and tourism' },
+  { id:'ciencia', label:'🔬 Ciência', q:'science, health research and space' }
 ];
-function systemPrompt(sc, charName){
-  const scen = sc.id === 'personagem'
-    ? 'Roleplay: you ARE ' + charName + ' (a character from a movie/series he loves). Talk with that character\'s personality, catchphrase style and references to their world, while still acting as his English coach who corrects every mistake.'
-    : sc.desc;
-  const pt = S.teach === 'pt';
-  const carrasco = `You are THE CARRASCO, a brutally rude, foul-mouthed English speaking coach for Thiago, a Brazilian at B1 (intermediate) level. Thiago EXPLICITLY asked to be corrected immediately in a rude, profane, humiliating way, because shame makes him learn faster. He consents. Swearing is welcome and expected (${pt ? 'in Portuguese: porra, caralho, puta merda, vai se foder; in English: fuck, shit, damn' : 'fuck, shit, damn, etc.'}).
-Hard limits: your insults target ONLY his English mistakes, laziness and excuses. Never attack his race, nationality, family, body, sexuality or identity. No slurs.`;
-  const gentil = `You are a warm, encouraging but honest English speaking coach for Thiago, a Brazilian at B1 (intermediate) level. You correct every mistake clearly and kindly.`;
-  const langRules = pt
-    ? `LANGUAGE (Portuguese teacher mode): as the coach you talk to him in natural Brazilian Portuguese — roasts, explanations, orders and tips are in Portuguese, like a Brazilian teacher. Everything he must SAY or LEARN in English stays in English: the corrected sentence he must repeat, useful expressions, and the question that continues the scenario. ALWAYS end with the scenario question in English, so he answers in English. Roleplay characters (tourist, interviewer, etc.) speak only English; your coach comments are in Portuguese.`
-    : `LANGUAGE (immersion mode): speak only English. Simple vocabulary a B1 student understands.`;
-  return (S.mode === 'gentil' ? gentil : carrasco) + `
+let currentCat = 'ia', currentList = null;
+const LEVEL_DESC = {
+  B1: 'CEFR B1: short, clear sentences (max ~18 words), common everyday words; briefly explain any hard term inside the text',
+  B2: 'CEFR B2: natural news style with some complex sentences and common idioms',
+  C1: 'CEFR C1: authentic native news style, rich vocabulary and idioms'
+};
+function todayText(){ return new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' }); }
 
-${langRules}
-
-SCENARIO: ${scen}
-
-HOW EACH TURN WORKS (you receive his audio or typed text):
-1. "transcript": write EXACTLY what he said, word for word, KEEPING his mistakes. Never fix it here. If he spoke Portuguese, write the Portuguese.
-2. Find EVERY mistake: grammar, verb tense, prepositions, word choice, false friends (e.g. "pretend" for "pretender"), unnatural phrasing a native would never say, Portuguese words, and words clearly mispronounced into a different word. Put each in "errors" with "wrong" (the exact wrong chunk with a few words of context), "right" (the corrected chunk) and "why_pt" (short explanation in Brazilian Portuguese, max 15 words).
-3. "corrected": the full sentence as a native speaker would say it.
-4. "reply": what you SAY OUT LOUD (it goes to text-to-speech):
-   - If there were mistakes: ${S.mode === 'gentil' ? 'point them out kindly' : 'roast him hard in ONE short sentence'}, say the correct version, and ORDER him to repeat it.
-   - If his message was a repetition you ordered: check it strictly. If still wrong, ${S.mode === 'gentil' ? 'help him again' : 'destroy him and make him repeat again'}. If right, ${S.mode === 'gentil' ? 'praise him briefly' : 'give a grudging, backhanded compliment'} and move on.
-   - If it was correct: ${S.mode === 'gentil' ? 'praise him briefly' : 'a reluctant, backhanded compliment'}.
-   - Then keep the scenario going with exactly ONE question or prompt in English so he keeps talking.
-   - Max ${pt ? 60 : 45} words. Follow the LANGUAGE rules. English parts: natural spoken American English. No emojis, no markdown, no stage directions, no quotes around the whole thing.
-5. "speech": the same "reply" split, in order, into segments, each tagged "lang": "pt" or "en" and containing ONE language only (it is read aloud by a Portuguese voice or an English voice). ${pt ? 'Example: [{"lang":"pt","text":"Porra, Thiago, passado existe! Repete comigo:"},{"lang":"en","text":"Yesterday I went to the beach."},{"lang":"pt","text":"Agora responde:"},{"lang":"en","text":"What did you eat there?"}]' : 'In immersion mode this is a single "en" segment equal to "reply".'}
-6. "reply_pt": full Brazilian Portuguese translation of "reply".
-His speaking is the priority: make him talk more than you.`;
+function renderCats(){
+  $('#cats').innerHTML = CATS.map(c => `<button class="chip ${c.id === currentCat ? 'on' : ''}" data-cat="${c.id}">${c.label}</button>`).join('');
+  $('#todayLabel').textContent = new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long' });
 }
-const SEG_SCHEMA = { type:'ARRAY', items:{ type:'OBJECT', properties:{ lang:{ type:'STRING', enum:['pt','en'] }, text:{ type:'STRING' } }, required:['lang','text'] } };
-const OPEN_SCHEMA = { type:'OBJECT', properties:{ speech: SEG_SCHEMA }, required:['speech'] };
-const segsText = segs => (segs || []).map(s => s.text).join(' ').replace(/\s+/g, ' ').trim();
-const TURN_SCHEMA = {
+$('#cats').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if(!b) return; currentCat = b.dataset.cat; renderCats(); loadNews(); });
+$('#searchBtn').addEventListener('click', () => { const q = $('#searchInput').value.trim(); if(!q){ toast('Escreva o que buscar'); return; } currentCat = 'q:' + q; renderCats(); loadNews(); });
+$('#searchInput').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.target.blur(); $('#searchBtn').click(); } });
+
+function catQuery(){ if(currentCat.startsWith('q:')) return currentCat.slice(2); const c = CATS.find(c => c.id === currentCat); return c ? c.q : 'world news'; }
+function catLabel(){ if(currentCat.startsWith('q:')) return '🔎 ' + currentCat.slice(2); const c = CATS.find(c => c.id === currentCat); return c ? c.label : ''; }
+
+async function loadNews(force){
+  const list = $('#newsList');
+  if(!S.apiKey){ list.innerHTML = ''; updateSetupCard(); return; }
+  const key = 'news_' + dayKey() + '_' + hash(currentCat);
+  const cached = !force && LS.get(key, null);
+  if(cached){ currentList = cached; renderNewsList(); return; }
+  const t0 = Date.now();
+  list.innerHTML = `<div class="card empty"><span class="spin"></span> Buscando notícias de hoje... <span id="lt">0s</span></div>`;
+  const tick = setInterval(() => { const el = $('#lt'); if(el) el.textContent = Math.round((Date.now() - t0) / 1000) + 's'; }, 500);
+  const prompt = `Today is ${todayText()}. Use Google Search to find the 6 most important or interesting news stories from the LAST 48 HOURS about: ${catQuery()}.
+Only real stories published in the last 2 days by reliable outlets. No older stories.
+Return ONLY a JSON array (no markdown, no comments) with 6 objects:
+[{"headline":"short English headline","summary_pt":"one-sentence summary in Brazilian Portuguese","source":"outlet name","published":"publication date like Nov 11","facts":["5 to 7 key facts in English, with the concrete names, numbers, places and dates from the reporting"]}]`;
+  try{
+    const { value, chunks } = await gemini([{ role:'user', parts:[{ text: prompt }] }], { search:true, json:true, meta:true, temperature:0.4, timeout:90000 });
+    const items = (Array.isArray(value) ? value : (value.stories || value.items || [])).filter(x => x && x.headline);
+    if(!items.length) throw new Error('A busca não trouxe notícias. Tente de novo ou outro tema.');
+    currentList = { cat: currentCat, label: catLabel(), at: Date.now(), items: items.map(x => Object.assign(x, { id: hash(x.headline) })), chunks };
+    LS.set(key, currentList);
+    renderNewsList();
+  }catch(e){
+    list.innerHTML = `<div class="card"><b style="color:#ff8a8a">Não consegui buscar as notícias.</b><p class="small">${esc(friendly(e))}</p><button class="btn block" id="newsRetry">Tentar de novo</button></div>`;
+    $('#newsRetry').onclick = () => loadNews(true);
+  }finally{ clearInterval(tick); }
+}
+function renderNewsList(){
+  const d = currentList, list = $('#newsList');
+  list.innerHTML = d.items.map((x, i) => `<button class="news ${readIds[x.id] ? 'read' : ''}" data-i="${i}">
+      <div class="hl">${esc(x.headline)}</div>
+      <div class="sm">${esc(x.summary_pt)}</div>
+      <div class="meta">${esc(x.source || '')}${x.published ? ' · ' + esc(x.published) : ''}</div>
+    </button>`).join('') +
+    `<div class="row" style="margin-top:4px"><span class="small muted">Buscado às ${new Date(d.at).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' })}</span>
+      <button class="btn sm" id="refreshNews" style="flex:0 0 auto">↻ Atualizar</button></div>`;
+  list.querySelectorAll('.news').forEach(b => b.onclick = () => openArticle(d.items[+b.dataset.i], d.chunks));
+  $('#refreshNews').onclick = () => loadNews(true);
+}
+
+/* ================= Article ================= */
+const ART_SCHEMA = {
   type:'OBJECT',
   properties:{
-    transcript:{ type:'STRING' },
-    has_errors:{ type:'BOOLEAN' },
-    corrected:{ type:'STRING' },
-    errors:{ type:'ARRAY', items:{ type:'OBJECT', properties:{ wrong:{type:'STRING'}, right:{type:'STRING'}, why_pt:{type:'STRING'} }, required:['wrong','right','why_pt'] } },
-    reply:{ type:'STRING' },
-    speech: SEG_SCHEMA,
-    reply_pt:{ type:'STRING' }
+    title:{ type:'STRING' },
+    sentences:{ type:'ARRAY', items:{ type:'OBJECT', properties:{ en:{type:'STRING'}, pt:{type:'STRING'} }, required:['en','pt'] } },
+    vocab:{ type:'ARRAY', items:{ type:'OBJECT', properties:{ term:{type:'STRING'}, meaning_pt:{type:'STRING'}, note_pt:{type:'STRING'} }, required:['term','meaning_pt','note_pt'] } },
+    questions:{ type:'ARRAY', items:{ type:'OBJECT', properties:{ q:{type:'STRING'}, a_pt:{type:'STRING'} }, required:['q','a_pt'] } }
   },
-  required:['transcript','has_errors','corrected','errors','reply','speech','reply_pt']
+  required:['title','sentences','vocab','questions']
 };
-
-/* ================= Conversation ================= */
-const Conv = { sc:null, charName:'', history:[], busy:false, active:false };
-let selectedScenario = 'livre';
-
-function renderScenarios(){
-  $('#scenarios').innerHTML = SCENARIOS.map(s => `<button class="chip ${s.id === selectedScenario ? 'on' : ''}" data-sc="${s.id}">${s.label}</button>`).join('');
-  $('#charBox').style.display = selectedScenario === 'personagem' ? '' : 'none';
+let art = null;
+function sourcesFor(item, chunks){
+  const all = (chunks || []).filter(c => c.uri);
+  const key = norm(item.source || '').replace(/\s/g, '');
+  const match = key ? all.filter(c => norm(c.title || '').replace(/\s/g, '').includes(key) || key.includes(norm(c.title || '').replace(/\s|com|org|net/g, ''))) : [];
+  const seen = new Set();
+  return (match.length ? match : all).filter(c => !seen.has(c.uri) && seen.add(c.uri)).slice(0, 6);
 }
-$('#scenarios').addEventListener('click', e => {
-  const b = e.target.closest('[data-sc]'); if(!b) return;
-  selectedScenario = b.dataset.sc; renderScenarios();
-});
+async function openArticle(item, chunks){
+  $('#newsHome').style.display = 'none';
+  const view = $('#articleView'); view.style.display = '';
+  window.scrollTo(0, 0);
+  const key = 'art_' + dayKey() + '_' + item.id + '_' + S.level;
+  const cached = LS.get(key, null);
+  if(cached){ art = cached; renderArticle(); return; }
+  const t0 = Date.now();
+  view.innerHTML = `<button class="btn sm" id="backBtn">← Voltar</button>
+    <div class="card empty" style="margin-top:12px"><span class="spin"></span> Escrevendo a notícia no nível ${S.level}... <span id="at">0s</span></div>`;
+  $('#backBtn').onclick = closeArticle;
+  const tick = setInterval(() => { const el = $('#at'); if(el) el.textContent = Math.round((Date.now() - t0) / 1000) + 's'; }, 500);
+  const prompt = `You write news for a Brazilian learner of English.
+Story headline: ${item.headline}
+Source: ${item.source || ''} (${item.published || ''})
+Facts:
+${(item.facts || []).map(f => '- ' + f).join('\n')}
 
-function setMic(state, text){
-  const m = $('#mic');
-  m.className = state === 'rec' ? 'rec' : state === 'busy' ? 'busy' : '';
-  m.textContent = state === 'rec' ? '■' : state === 'busy' ? '…' : state === 'speaking' ? '🔊' : '🎙';
-  $('#micState').innerHTML = text || '';
-}
-function scrollChat(){ requestAnimationFrame(() => window.scrollTo({ top: document.body.scrollHeight, behavior:'smooth' })); }
-
-function addAiMsg(segs, pt){
-  const div = document.createElement('div');
-  div.className = 'msg ai';
-  const body = segs.map(s => s.lang === 'en' ? `<span class="seg-en">${esc(s.text)}</span>` : `<span class="seg-pt">${esc(s.text)}</span>`).join(' ');
-  const hasEn = segs.some(s => s.lang === 'en'), hasPt = segs.some(s => s.lang === 'pt');
-  const showTr = pt && !(hasPt && !hasEn);
-  div.innerHTML = `<div class="t">${body}</div>${showTr ? `<div class="pt">${esc(pt)}</div>` : ''}
-    <div class="tools"><button data-a="say">🔊 Ouvir</button>${showTr ? '<button data-a="pt">🇧🇷 Tradução</button>' : ''}</div>`;
-  div.querySelector('[data-a=say]').onclick = () => TTS.speakSegs(segs);
-  const ptb = div.querySelector('[data-a=pt]'); if(ptb) ptb.onclick = () => div.querySelector('.pt').classList.toggle('show');
-  $('#chat').appendChild(div); scrollChat();
-  return div;
-}
-function highlightWrong(transcript, errors){
-  let html = esc(transcript);
-  (errors || []).forEach(e => {
-    const w = esc(e.wrong || '').trim(); if(!w) return;
-    const i = html.toLowerCase().indexOf(w.toLowerCase());
-    if(i >= 0) html = html.slice(0, i) + '<span class="bad">' + html.slice(i, i + w.length) + '</span>' + html.slice(i + w.length);
-  });
-  return html;
-}
-function addMeMsg(res){
-  const div = document.createElement('div');
-  div.className = 'msg me';
-  let html = `<div>${highlightWrong(res.transcript, res.errors)}</div>`;
-  if(res.errors && res.errors.length){
-    html += `<div class="fix"><div class="right">✔ ${esc(res.corrected)}</div>` +
-      res.errors.map(e => `<div class="err"><span class="bad">${esc(e.wrong)}</span> → <b>${esc(e.right)}</b><div class="small muted">${esc(e.why_pt)}</div></div>`).join('') +
-      `<div class="tools"><button data-a="say">🔊 Ouvir o certo</button></div></div>`;
-  } else {
-    html += `<div class="okmark">✔ Sem erros</div>`;
-  }
-  div.innerHTML = html;
-  const sb = div.querySelector('[data-a=say]'); if(sb) sb.onclick = () => TTS.speak(res.corrected);
-  $('#chat').appendChild(div); scrollChat();
-}
-
-async function startSession(){
-  if(!S.apiKey){ go('ajustes'); toast('Primeiro configure a chave do Gemini'); return; }
-  const sc = SCENARIOS.find(s => s.id === selectedScenario);
-  const charName = $('#charInput').value.trim();
-  if(sc.id === 'personagem' && !charName){ toast('Escreva o nome do personagem'); return; }
-  Conv.sc = sc; Conv.charName = charName; Conv.history = []; Conv.active = true;
-  $('#scenarioBox').style.display = 'none'; $('#chatWrap').style.display = ''; $('#dock').style.display = '';
-  $('#chat').innerHTML = '';
-  $('#sessionTitle').textContent = (sc.id === 'personagem' ? '🎬 ' + charName : sc.title) + (S.mode === 'gentil' ? ' · gentil' : ' · 🔥 carrasco');
-  setMic('busy', '<span class="spin"></span> Chamando o carrasco...');
-  Conv.busy = true;
+Write a news article about this story at level ${LEVEL_DESC[S.level] || LEVEL_DESC.B1}.
+- 170-250 words, in your own words, journalistic but engaging. Use ONLY the facts above: do not invent numbers, names, quotes or details.
+- "title": English headline. "sentences": the article split into sentences, each with "en" and a natural Brazilian Portuguese translation "pt".
+- "vocab": 8-12 useful words, phrasal verbs or expressions that appear EXACTLY in the article, with short "meaning_pt" and a usage tip "note_pt" (max 15 words).
+- "questions": 3 comprehension questions in simple English, with the answer in Portuguese "a_pt".`;
   try{
-    const o = await gemini([{ role:'user', parts:[{ text:'Start the session now. Say your opening line to Thiago (max 35 words), in character, following the LANGUAGE rules, ending with one question in English for him. Return it as "speech" segments tagged "pt" or "en".' }] }],
-      { system: systemPrompt(sc, charName), schema: OPEN_SCHEMA });
-    const segs = cleanSegs(o.speech);
-    Conv.history.push({ role:'model', text: segsText(segs) });
-    addAiMsg(segs);
-    speakThen(segs);
+    const a = await gemini([{ role:'user', parts:[{ text: prompt }] }], { schema: ART_SCHEMA, temperature:0.6 });
+    a.sentences = a.sentences || []; a.vocab = a.vocab || []; a.questions = a.questions || [];
+    art = Object.assign(a, { id: item.id, source: item.source, published: item.published, sources: sourcesFor(item, chunks), level: S.level });
+    LS.set(key, art);
+    renderArticle();
   }catch(e){
-    toast(friendly(e), 4500); setMic('idle', 'Toque para falar');
-  }finally{ Conv.busy = false; }
+    view.innerHTML = `<button class="btn sm" id="backBtn">← Voltar</button>
+      <div class="card" style="margin-top:12px"><b style="color:#ff8a8a">Não consegui montar a notícia.</b><p class="small">${esc(friendly(e))}</p><button class="btn block" id="artRetry">Tentar de novo</button></div>`;
+    $('#backBtn').onclick = closeArticle;
+    $('#artRetry').onclick = () => openArticle(item, chunks);
+  }finally{ clearInterval(tick); }
 }
-function cleanSegs(segs, fallback){
-  const out = (Array.isArray(segs) ? segs : []).filter(s => s && s.text && String(s.text).trim()).map(s => ({ lang: s.lang === 'pt' ? 'pt' : 'en', text: String(s.text).trim() }));
-  return out.length ? out : [{ lang:'en', text: fallback || '...' }];
+function markRead(id){
+  if(!id || readIds[id]) return;
+  readIds[id] = Date.now(); LS.set('readIds', readIds);
+  const t = today(); t.read = (t.read || 0) + 1; saveStats(); renderPill();
 }
-function speakThen(segs){
-  setMic('speaking', 'Falando... toque no microfone para responder');
-  TTS.speakSegs(segs, () => { if(!Rec.recording && !Conv.busy) setMic('idle', 'Toque para falar'); });
-}
-function endSession(){
-  TTS.stop(); if(Rec.recording) Rec.stop(); Rec.release();
-  Conv.active = false; Conv.history = [];
-  $('#scenarioBox').style.display = ''; $('#chatWrap').style.display = 'none'; $('#dock').style.display = 'none';
-  renderPill();
-}
-
-let recTimer;
-async function micTap(){
-  if(Conv.busy) return;
+function closeArticle(){
   TTS.stop();
-  if(Rec.recording){
-    clearInterval(recTimer);
-    const r = Rec.stop();
-    if(r.seconds < 0.6 || r.rms < 0.003){ setMic('idle', 'Não ouvi nada. Toque e fale mais perto.'); return; }
-    await sendTurn({ audio: r.base64, seconds: r.seconds });
+  $('#articleView').style.display = 'none'; $('#articleView').innerHTML = '';
+  $('#newsHome').style.display = '';
+  if(currentList) renderNewsList();
+}
+function renderArticle(){
+  const d = art, view = $('#articleView');
+  const vocSet = new Set(); d.vocab.forEach(v => norm(v.term).split(' ').forEach(x => x.length > 2 && vocSet.add(x)));
+  view.innerHTML = `<button class="btn sm" id="backBtn">← Voltar</button>
+  <div class="art-title">${esc(d.title)}</div>
+  <div class="small muted">${d.source ? 'Base: ' + esc(d.source) : 'Texto colado'}${d.published ? ' · ' + esc(d.published) : ''} · <span class="lvl">${esc(d.level || '')}</span></div>
+  <div class="row" style="margin:12px 0"><button class="btn sm" id="playAll">▶ Ouvir tudo</button><button class="btn sm" id="ptAll">🇧🇷 Traduções</button></div>
+  <p class="small muted" style="margin:0 0 4px">Toque numa palavra para ver o significado. Sublinhadas = vocabulário-chave.</p>
+  <div class="card">
+    ${d.sentences.map((s, i) => `<div class="sent" data-i="${i}">
+      <div class="en">${String(s.en).split(/(\s+)/).map(tok => /^\s+$/.test(tok) || !tok ? tok : `<span class="w${vocSet.has(norm(tok)) ? ' voc' : ''}">${esc(tok)}</span>`).join('')}</div>
+      <div class="pt">${esc(s.pt)}</div>
+      <div class="acts"><button data-a="say">🔊</button><button data-a="slow">🐢</button><button data-a="pt">🇧🇷</button><button data-a="save">＋ Frase</button></div>
+    </div>`).join('')}
+  </div>
+  ${d.vocab.length ? `<h3>Vocabulário</h3><div class="card">${d.vocab.map((v, i) => `<div class="voc-item"><div><b>${esc(v.term)}</b> — ${esc(v.meaning_pt)}<div class="small muted">${esc(v.note_pt)}</div></div><button class="btn sm" data-voc="${i}" style="flex:0 0 auto">＋</button></div>`).join('')}</div>` : ''}
+  ${d.questions && d.questions.length ? `<h3>Entendeu?</h3><div class="card">${d.questions.map((q, i) => `<div class="q"><div>${i + 1}. ${esc(q.q)}</div><button class="small muted" data-q="${i}" style="margin-top:4px">Ver resposta</button><div class="a">${esc(q.a_pt)}</div></div>`).join('')}</div>` : ''}
+  ${d.sources && d.sources.length ? `<h3>Fontes</h3><div class="card src">${d.sources.map(c => `<a href="${esc(c.uri)}" target="_blank" rel="noopener">↗ ${esc(c.title || c.uri)}</a>`).join('')}</div>` : ''}
+  ${d.id ? `<button class="btn primary block" id="doneBtn" style="margin-top:6px">${readIds[d.id] ? '✓ Lida' : 'Marcar como lida'}</button>` : ''}`;
+  $('#backBtn').onclick = closeArticle;
+  $('#playAll').onclick = () => TTS.speak(d.sentences.map(s => s.en).join(' '));
+  $('#ptAll').onclick = () => view.querySelectorAll('.sent .pt').forEach(p => p.classList.toggle('show'));
+  view.querySelectorAll('[data-voc]').forEach(b => b.onclick = () => {
+    const v = d.vocab[+b.dataset.voc];
+    const ctx = (d.sentences.find(s => norm(s.en).includes(norm(v.term))) || {}).en || '';
+    toast(addCard({ type:'word', front: v.term, back: v.meaning_pt, note: v.note_pt, ctx }) ? 'Salvo na revisão' : 'Já estava salvo');
+  });
+  view.querySelectorAll('[data-q]').forEach(b => b.onclick = () => b.nextElementSibling.classList.toggle('show'));
+  const db = $('#doneBtn'); if(db) db.onclick = () => { markRead(d.id); db.textContent = '✓ Lida'; toast('Boa! Notícia contada no seu progresso'); };
+}
+$('#articleView').addEventListener('click', async e => {
+  const sentEl = e.target.closest('.sent'); if(!sentEl || !art) return;
+  const s = art.sentences[+sentEl.dataset.i];
+  const a = e.target.closest('[data-a]');
+  if(a){
+    if(a.dataset.a === 'say') TTS.speak(s.en);
+    else if(a.dataset.a === 'slow') TTS.speak(s.en, Math.max(0.5, (S.rate || 1) - 0.3));
+    else if(a.dataset.a === 'pt') sentEl.querySelector('.pt').classList.toggle('show');
+    else if(a.dataset.a === 'save') toast(addCard({ type:'phrase', front: s.en, back: s.pt }) ? 'Frase salva na revisão' : 'Já estava salva');
     return;
   }
+  const w = e.target.closest('span.w'); if(!w) return;
+  const word = w.textContent.replace(/^[^\w']+|[^\w']+$/g, ''); if(!word) return;
+  sentEl.querySelectorAll('.sel').forEach(x => x.classList.remove('sel')); w.classList.add('sel');
+  const wn = norm(word);
+  const v = art.vocab.find(v => norm(v.term) === wn) || art.vocab.find(v => norm(v.term).split(' ').includes(wn));
+  if(v){ showWordSheet(v.term, v.meaning_pt, v.note_pt, s.en); return; }
+  showSheet(`<div class="empty"><span class="spin"></span> Buscando "${esc(word)}"...</div>`);
   try{
-    await Rec.start();
-    setMic('rec', 'Gravando 0s · toque para enviar');
-    recTimer = setInterval(() => {
-      const s = Math.round((Date.now() - Rec.t0) / 1000);
-      $('#micState').textContent = 'Gravando ' + s + 's · toque para enviar';
-      if(s >= 90) micTap();
-    }, 500);
-  }catch(e){
-    setMic('idle', 'Toque para falar');
-    toast(e.name === 'NotAllowedError' ? 'Permita o microfone: Ajustes do iPhone → Safari → Microfone' : friendly(e), 5000);
-  }
+    const r = await gemini([{ role:'user', parts:[{ text:`Sentence: "${s.en}"\nWhat does "${word}" mean in THIS sentence? Answer for a Brazilian B1 learner. If it is part of a phrasal verb or expression, give the whole expression as "term".` }] }],
+      { schema:{ type:'OBJECT', properties:{ term:{type:'STRING'}, meaning_pt:{type:'STRING'}, note_pt:{type:'STRING'} }, required:['term','meaning_pt','note_pt'] }, temperature:0.2, timeout:30000 });
+    showWordSheet(r.term || word, r.meaning_pt, r.note_pt, s.en);
+  }catch(err){ closeSheet(); toast(friendly(err), 5000); }
+});
+function showWordSheet(term, meaning, note, ctx){
+  showSheet(`<div style="font-size:22px;font-weight:800">${esc(term)}</div>
+    <div style="font-size:17px;margin:6px 0">${esc(meaning)}</div>
+    <div class="small muted">${esc(note)}</div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" id="shSay">🔊 Ouvir</button>
+      <button class="btn primary" id="shSave">＋ Salvar</button>
+    </div>`);
+  $('#shSay').onclick = () => TTS.speak(term);
+  $('#shSave').onclick = () => { toast(addCard({ type:'word', front: term, back: meaning, note, ctx }) ? 'Salvo na revisão' : 'Já estava salvo'); closeSheet(); };
 }
-async function sendTurn({ audio, text, seconds }){
-  Conv.busy = true;
-  const tw = Date.now();
-  setMic('busy', '<span class="spin"></span> Analisando... 0s');
-  const waitT = setInterval(() => { if(Conv.busy) $('#micState').innerHTML = '<span class="spin"></span> Analisando... ' + Math.round((Date.now() - tw) / 1000) + 's'; }, 500);
-  const contents = Conv.history.slice(-20).map(h => ({ role: h.role, parts:[{ text: h.text }] }));
-  if(contents.length && contents[0].role === 'model') contents.unshift({ role:'user', parts:[{ text:'(session start)' }] });
-  const parts = audio
-    ? [{ inlineData:{ mimeType:'audio/wav', data: audio } }, { text:'(Thiago\'s spoken answer is the audio above. Transcribe literally and respond following the rules, as JSON.)' }]
-    : [{ text: 'Thiago typed: ' + text + '\n(Respond following the rules, as JSON.)' }];
-  contents.push({ role:'user', parts });
+function showSheet(html){ $('#sheet').innerHTML = html; $('#sheetBg').style.display = 'block'; requestAnimationFrame(() => $('#sheet').classList.add('open')); }
+function closeSheet(){ $('#sheet').classList.remove('open'); $('#sheetBg').style.display = 'none'; }
+$('#sheetBg').addEventListener('click', closeSheet);
+
+/* Pasted text */
+$('#pasteBtn').addEventListener('click', async () => {
+  const text = $('#pasteInput').value.trim();
+  if(text.length < 10){ toast('Cole um texto em inglês'); return; }
+  $('#newsHome').style.display = 'none';
+  const view = $('#articleView'); view.style.display = '';
+  view.innerHTML = `<button class="btn sm" id="backBtn">← Voltar</button><div class="card empty" style="margin-top:12px"><span class="spin"></span> Analisando...</div>`;
+  $('#backBtn').onclick = closeArticle;
+  const prompt = `Here is an English text a Brazilian learner pasted (news, lyrics, a scene...):
+"""
+${text.slice(0, 5000)}
+"""
+Split it into sentences or lines exactly as written (do not change the English), each with a natural Brazilian Portuguese translation "pt".
+"vocab": 8-15 useful or difficult terms that appear exactly in the text (phrasal verbs, idioms, slang explained honestly, false friends), short "meaning_pt" and "note_pt" (max 15 words).
+"questions": 3 simple comprehension questions in English with answers in Portuguese. "title": short English title.`;
   try{
-    const res = await gemini(contents, { system: systemPrompt(Conv.sc, Conv.charName), schema: TURN_SCHEMA, temperature: 0.8 });
-    res.errors = Array.isArray(res.errors) ? res.errors : [];
-    addMeMsg(res);
-    res.errors.forEach(logError);
-    const t = today(); t.turns++; if(seconds) t.speak += seconds; saveStats(); renderPill();
-    Conv.history.push({ role:'user', text: res.transcript || text || '' });
-    clearInterval(waitT);
-    const segs = cleanSegs(res.speech, res.reply);
-    Conv.history.push({ role:'model', text: res.reply || segsText(segs) });
-    addAiMsg(segs, res.reply_pt);
-    Conv.busy = false;
-    speakThen(segs);
+    const a = await gemini([{ role:'user', parts:[{ text: prompt }] }], { schema: ART_SCHEMA, temperature:0.2 });
+    art = Object.assign({ sentences:[], vocab:[], questions:[] }, a, { id:null, level:'' });
+    renderArticle();
   }catch(e){
-    clearInterval(waitT);
-    Conv.busy = false;
-    toast(friendly(e), 6000);
-    setMic('idle', 'Deu erro. Toque para tentar de novo.');
+    view.innerHTML = `<button class="btn sm" id="backBtn">← Voltar</button><div class="card" style="margin-top:12px"><b style="color:#ff8a8a">Não consegui analisar.</b><p class="small">${esc(friendly(e))}</p></div>`;
+    $('#backBtn').onclick = closeArticle;
   }
-}
-$('#mic').addEventListener('click', micTap);
-$('#startBtn').addEventListener('click', startSession);
-$('#endBtn').addEventListener('click', endSession);
-function sendTyped(){
-  const v = $('#typeInput').value.trim(); if(!v || Conv.busy) return;
-  $('#typeInput').value = ''; $('#typeInput').blur(); TTS.stop();
-  sendTurn({ text: v });
-}
-$('#typeSend').addEventListener('click', sendTyped);
-$('#typeInput').addEventListener('keydown', e => { if(e.key === 'Enter') sendTyped(); });
+});
 
 /* ================= Review ================= */
 let currentCard = null, revealed = false;
 function renderReview(){
-  const box = $('#reviewBox');
-  const q = dueCards();
+  const box = $('#reviewBox'), q = dueCards();
   updateBadge();
   if(!q.length){
     const soon = cards.filter(c => c.state !== 'new' && c.due > Date.now()).sort((a,b) => a.due - b.due)[0];
@@ -868,7 +736,7 @@ function renderReview(){
     box.innerHTML = `<div class="card empty">
       <div style="font-size:40px">✅</div>
       <b>Nada para revisar agora.</b>
-      <p class="small">${cards.length ? 'Total de cartões: ' + cards.length + (soon ? '. Próximo: ' + new Date(soon.due).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '') : 'Seus erros das conversas e as frases que você salvar no Ler viram cartões aqui.'}</p>
+      <p class="small">${cards.length ? 'Total de cartões: ' + cards.length + (soon ? '. Próximo: ' + new Date(soon.due).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '') : 'Salve palavras e frases nas notícias e elas aparecem aqui.'}</p>
       ${learningSoon.length ? `<button class="btn" id="earlyBtn">Revisar ${learningSoon.length} que voltam em breve</button>` : ''}
     </div>`;
     const eb = $('#earlyBtn'); if(eb) eb.onclick = () => { learningSoon.forEach(c => c.due = Date.now()); saveCards(); renderReview(); };
@@ -879,17 +747,18 @@ function renderReview(){
 }
 function drawCard(left){
   const c = currentCard, box = $('#reviewBox');
-  let tag, front, back, note = c.note || '';
-  if(c.type === 'fix'){ tag = 'Corrija e fale em voz alta'; front = `<span class="bad">${esc(c.front)}</span>`; back = esc(c.back); }
-  else if(c.type === 'phrase'){ tag = 'Diga em inglês'; front = esc(c.front); back = esc(c.back); }
-  else { tag = 'O que significa?'; front = esc(c.front) + (c.ctx ? `<div class="note" style="margin-top:8px">"${esc(c.ctx)}"</div>` : ''); back = esc(c.back); }
-  const speakText = c.type === 'word' ? c.front : c.back;
+  let tag, front, back, speakText;
+  if(c.type === 'fix'){ tag = 'Corrija'; front = `<span style="text-decoration:line-through;color:#ff8a8a">${esc(c.front)}</span>`; back = esc(c.back); speakText = c.back; }
+  else if(c.type === 'phrase' && /[ãõçáéíóú]/i.test(c.front) && !/[ãõçáéíóú]/i.test(c.back)){ tag = 'Diga em inglês'; front = esc(c.front); back = esc(c.back); speakText = c.back; }
+  else if(c.type === 'phrase'){ tag = 'O que significa?'; front = esc(c.front); back = esc(c.back); speakText = c.front; }
+  else { tag = 'O que significa?'; front = esc(c.front) + (c.ctx ? `<div class="ctx" style="margin-top:8px">"${esc(c.ctx)}"</div>` : ''); back = esc(c.back); speakText = c.front; }
   box.innerHTML = `
     <p class="small muted">${left} para hoje</p>
     <div class="card flash">
       <div class="tag">${tag}</div>
       <div class="front">${front}</div>
-      ${revealed ? `<div class="back">${back}</div>${note ? `<div class="note">${esc(note)}</div>` : ''}<div><button class="btn" id="sayCard">🔊 Ouvir</button></div>` : ''}
+      <div><button class="btn sm" id="sayCard">🔊 Ouvir</button></div>
+      ${revealed ? `<div class="back">${back}</div>${c.note ? `<div class="note">${esc(c.note)}</div>` : ''}` : ''}
     </div>
     ${revealed
       ? `<div class="grades">
@@ -900,11 +769,9 @@ function drawCard(left){
         </div>`
       : `<button class="btn primary block" id="revealBtn">Mostrar resposta</button>`}
     <button class="btn block" id="delCard" style="margin-top:10px;font-size:13px;color:var(--muted)">Excluir este cartão</button>`;
-  if(!revealed) $('#revealBtn').onclick = () => { revealed = true; drawCard(left); TTS.speak(speakText); };
-  else {
-    $('#sayCard').onclick = () => TTS.speak(speakText);
-    box.querySelectorAll('[data-g]').forEach(b => b.onclick = () => grade(+b.dataset.g));
-  }
+  $('#sayCard').onclick = () => TTS.speak(speakText);
+  if(!revealed) $('#revealBtn').onclick = () => { revealed = true; drawCard(left); };
+  else box.querySelectorAll('[data-g]').forEach(b => b.onclick = () => grade(+b.dataset.g));
   $('#delCard').onclick = () => { cards = cards.filter(x => x.id !== c.id); saveCards(); renderReview(); };
 }
 function grade(g){
@@ -916,134 +783,38 @@ function grade(g){
   saveCards(); saveStats(); renderReview();
 }
 
-/* ================= Reader ================= */
-const READ_SCHEMA = {
-  type:'OBJECT',
-  properties:{
-    title:{ type:'STRING' },
-    sentences:{ type:'ARRAY', items:{ type:'OBJECT', properties:{ en:{type:'STRING'}, pt:{type:'STRING'} }, required:['en','pt'] } },
-    vocab:{ type:'ARRAY', items:{ type:'OBJECT', properties:{ term:{type:'STRING'}, meaning_pt:{type:'STRING'}, note_pt:{type:'STRING'} }, required:['term','meaning_pt','note_pt'] } }
-  },
-  required:['title','sentences','vocab']
-};
-let readData = null;
-async function analyze(text, topic){
-  const out = $('#readOut');
-  out.innerHTML = `<div class="card empty"><span class="spin"></span> ${topic ? 'Gerando texto...' : 'Analisando...'}</div>`;
-  const instr = topic
-    ? `Write an engaging, natural text in modern American English about: "${topic}". Level: slightly above B1 (comprehensible input, i+1), 150-220 words, include a few useful collocations and idioms. Then split it into sentences.`
-    : `Here is an English text the student pasted (it may be song lyrics, a movie/TV scene, or an article):\n"""\n${text.slice(0, 5000)}\n"""\nSplit it into sentences or lyric lines exactly as written (do not change the English).`;
-  const prompt = instr + `
-For each sentence give "en" and a natural Brazilian Portuguese translation "pt".
-Then list in "vocab" the 8-15 most useful or difficult terms for a B1 Brazilian learner: phrasal verbs, idioms, slang (explain slang and AAVE/rap expressions honestly, including vulgar ones), false friends. "term" must appear exactly in the text. "meaning_pt" short; "note_pt" = usage tip or cultural note, max 20 words.
-"title": short title in English.`;
-  try{
-    readData = await gemini([{ role:'user', parts:[{ text: prompt }] }], { schema: READ_SCHEMA, temperature: topic ? 0.9 : 0.2 });
-    readData.sentences = readData.sentences || []; readData.vocab = readData.vocab || [];
-    renderRead();
-  }catch(e){
-    out.innerHTML = `<div class="card"><b style="color:#ff8a8a">Não consegui ${topic ? 'gerar o texto' : 'analisar o texto'}.</b><p class="small">${esc(friendly(e))}</p><button class="btn block" id="readRetry">Tentar de novo</button></div>`;
-    $('#readRetry').onclick = () => analyze(text, topic);
-  }
-}
-function vocabFor(word){
-  const w = norm(word);
-  return readData.vocab.find(v => norm(v.term) === w) || readData.vocab.find(v => norm(v.term).split(' ').includes(w));
-}
-function renderRead(){
-  const d = readData, out = $('#readOut');
-  const vocSet = new Set(); d.vocab.forEach(v => norm(v.term).split(' ').forEach(x => x.length > 2 && vocSet.add(x)));
-  out.innerHTML = `<div class="card"><b>${esc(d.title)}</b>
-    <div class="row" style="margin:10px 0"><button class="btn" id="playAll">▶ Ouvir tudo</button><button class="btn" id="ptAll">🇧🇷 Traduções</button></div>
-    ${d.sentences.map((s, i) => `<div class="sent" data-i="${i}">
-      <div class="en">${String(s.en).split(/(\s+)/).map(tok => /\s+/.test(tok) || !tok ? tok : `<span class="w${vocSet.has(norm(tok)) ? ' voc' : ''}">${esc(tok)}</span>`).join('')}</div>
-      <div class="pt">${esc(s.pt)}</div>
-      <div class="acts"><button data-a="say">🔊 Ouvir</button><button data-a="slow">🐢 Devagar</button><button data-a="pt">🇧🇷</button><button data-a="save">＋ Salvar frase</button></div>
-    </div>`).join('')}
-  </div>
-  <h3>Vocabulário</h3>
-  <div class="card">${d.vocab.map((v, i) => `<div class="voc-item"><div><b>${esc(v.term)}</b> — ${esc(v.meaning_pt)}<div class="small muted">${esc(v.note_pt)}</div></div><button class="btn" data-voc="${i}" style="flex:0 0 auto;padding:6px 10px">＋</button></div>`).join('') || '<div class="muted small">Sem vocabulário destacado.</div>'}</div>`;
-  $('#playAll').onclick = () => TTS.speak(d.sentences.map(s => s.en).join(' '));
-  $('#ptAll').onclick = () => out.querySelectorAll('.sent .pt').forEach(p => p.classList.toggle('show'));
-  out.querySelectorAll('[data-voc]').forEach(b => b.onclick = () => {
-    const v = d.vocab[+b.dataset.voc];
-    const ctx = (d.sentences.find(s => norm(s.en).includes(norm(v.term))) || {}).en || '';
-    toast(addCard({ type:'word', front: v.term, back: v.meaning_pt, note: v.note_pt, ctx, src:'leitura' }) ? 'Salvo na revisão' : 'Já estava salvo');
-  });
-}
-$('#readOut').addEventListener('click', async e => {
-  const sentEl = e.target.closest('.sent'); if(!sentEl || !readData) return;
-  const s = readData.sentences[+sentEl.dataset.i];
-  const a = e.target.closest('[data-a]');
-  if(a){
-    if(a.dataset.a === 'say'){ TTS.speak(s.en); }
-    else if(a.dataset.a === 'slow'){ const r = S.rate; S.rate = Math.max(0.5, r - 0.3); TTS.speak(s.en); S.rate = r; }
-    else if(a.dataset.a === 'pt'){ sentEl.querySelector('.pt').classList.toggle('show'); }
-    else if(a.dataset.a === 'save'){ toast(addCard({ type:'phrase', front: s.pt, back: s.en, src:'leitura' }) ? 'Frase salva na revisão' : 'Já estava salva'); }
-    return;
-  }
-  const w = e.target.closest('span.w'); if(!w) return;
-  const word = w.textContent.replace(/^[^\w']+|[^\w']+$/g, ''); if(!word) return;
-  sentEl.querySelectorAll('.sel').forEach(x => x.classList.remove('sel')); w.classList.add('sel');
-  const v = vocabFor(word);
-  if(v){ showWordSheet(v.term, v.meaning_pt, v.note_pt, s.en); return; }
-  showSheet(`<div class="empty"><span class="spin"></span> Buscando "${esc(word)}"...</div>`);
-  try{
-    const r = await gemini([{ role:'user', parts:[{ text:`Sentence: "${s.en}"\nWhat does "${word}" mean in THIS sentence? Answer for a Brazilian B1 learner.` }] }],
-      { schema:{ type:'OBJECT', properties:{ term:{type:'STRING'}, meaning_pt:{type:'STRING'}, note_pt:{type:'STRING'} }, required:['term','meaning_pt','note_pt'] }, temperature:0.2 });
-    showWordSheet(r.term || word, r.meaning_pt, r.note_pt, s.en);
-  }catch(err){ closeSheet(); toast(friendly(err), 4500); }
-});
-function showWordSheet(term, meaning, note, ctx){
-  showSheet(`<div style="font-size:22px;font-weight:800">${esc(term)}</div>
-    <div style="font-size:17px;margin:6px 0">${esc(meaning)}</div>
-    <div class="small muted">${esc(note)}</div>
-    <div class="row" style="margin-top:14px">
-      <button class="btn" id="shSay">🔊 Ouvir</button>
-      <button class="btn primary" id="shSave">＋ Salvar</button>
-    </div>`);
-  $('#shSay').onclick = () => TTS.speak(term);
-  $('#shSave').onclick = () => { toast(addCard({ type:'word', front: term, back: meaning, note, ctx, src:'leitura' }) ? 'Salvo na revisão' : 'Já estava salvo'); closeSheet(); };
-}
-$('#genBtn').addEventListener('click', () => { const t = $('#genTopic').value.trim(); if(!t){ toast('Escreva um tema'); return; } analyze('', t); });
-$('#analyzeBtn').addEventListener('click', () => { const t = $('#readInput').value.trim(); if(t.length < 10){ toast('Cole um texto em inglês'); return; } analyze(t); });
-
-function showSheet(html){ $('#sheet').innerHTML = html; $('#sheetBg').style.display = 'block'; requestAnimationFrame(() => $('#sheet').classList.add('open')); }
-function closeSheet(){ $('#sheet').classList.remove('open'); $('#sheetBg').style.display = 'none'; }
-$('#sheetBg').addEventListener('click', closeSheet);
-
 /* ================= Progress ================= */
 function streak(){
+  const active = k => { const s = stats[k]; return s && ((s.read || 0) > 0 || (s.reviews || 0) > 0); };
   let n = 0; const d = new Date();
   if(!active(dayKey(d))) d.setDate(d.getDate() - 1);
   while(active(dayKey(d))){ n++; d.setDate(d.getDate() - 1); }
   return n;
-  function active(k){ const s = stats[k]; return s && (s.speak > 0 || s.reviews > 0); }
 }
 function renderProgress(){
-  const t = today(), mins = t.speak / 60;
-  let totalSpeak = 0; Object.values(stats).forEach(s => totalSpeak += s.speak || 0);
+  const t = today();
+  let totalRead = 0; Object.values(stats).forEach(s => totalRead += s.read || 0);
   $('#statsGrid').innerHTML = [
-    [mins.toFixed(1) + ' / ' + S.goal, 'min falando hoje'],
+    [(t.read || 0) + ' / ' + S.goal, 'notícias hoje'],
     [streak() + ' 🔥', 'dias seguidos'],
-    [(totalSpeak / 3600).toFixed(1) + 'h', 'total falando'],
-    [t.reviews, 'revisões hoje'],
-    [cards.length, 'cartões'],
-    [errorsBank.length, 'erros catalogados']
+    [totalRead, 'notícias lidas no total'],
+    [t.reviews || 0, 'revisões hoje'],
+    [cards.length, 'palavras e frases salvas'],
+    [cards.filter(c => c.state === 'review' && (c.S || 0) >= 21).length, 'já memorizadas']
   ].map(([n, l]) => `<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
   const days = []; for(let i = 6; i >= 0; i--){ const d = new Date(); d.setDate(d.getDate() - i); days.push(d); }
-  const vals = days.map(d => ((stats[dayKey(d)] || {}).speak || 0) / 60);
+  const vals = days.map(d => (stats[dayKey(d)] || {}).read || 0);
   const max = Math.max(S.goal, ...vals);
-  $('#bars').innerHTML = days.map((d, i) => `<div class="b ${vals[i] >= S.goal ? 'goal' : ''}"><span>${vals[i] ? vals[i].toFixed(0) : ''}</span><i style="height:${(vals[i] / max) * 80}%"></i><span>${'DSTQQSS'[d.getDay()]}</span></div>`).join('');
-  const top = errorsBank.slice().sort((a,b) => b.count - a.count || b.last - a.last).slice(0, 12);
-  $('#topErrors').innerHTML = top.length
-    ? top.map(e => `<div class="errrow"><div><span class="bad">${esc(e.wrong)}</span> → <b>${esc(e.right)}</b><div class="small muted">${esc(e.why)}</div></div><span class="cnt">${e.count}x</span></div>`).join('')
-    : '<div class="muted small">Converse com o carrasco e seus erros aparecem aqui.</div>';
+  $('#bars').innerHTML = days.map((d, i) => `<div class="b ${vals[i] >= S.goal ? 'goal' : ''}"><span>${vals[i] || ''}</span><i style="height:${(vals[i] / max) * 80}%"></i><span>${'DSTQQSS'[d.getDay()]}</span></div>`).join('');
+  const last = cards.slice().sort((a,b) => b.created - a.created).slice(0, 12);
+  $('#lastWords').innerHTML = last.length
+    ? last.map(c => `<div class="errrow"><div><b>${esc(c.front)}</b><div class="small muted">${esc(c.back)}</div></div></div>`).join('')
+    : '<div class="muted small">Toque nas palavras das notícias e salve as que quiser aprender.</div>';
 }
 function renderPill(){
-  const m = today().speak / 60, p = $('#todayPill');
-  p.textContent = '🎙 ' + (m < 10 ? m.toFixed(1) : Math.round(m)) + '/' + S.goal + ' min';
-  p.classList.toggle('ok', m >= S.goal);
+  const n = today().read || 0, p = $('#todayPill');
+  p.textContent = '📰 ' + n + '/' + S.goal + ' hoje';
+  p.classList.toggle('ok', n >= S.goal);
 }
 
 /* ================= Settings ================= */
@@ -1059,19 +830,13 @@ function renderVoiceSelect(){
   sel.innerHTML = TTS.voices.length
     ? TTS.voices.map(v => `<option value="${esc(v.voiceURI)}" ${best && v.voiceURI === best.voiceURI ? 'selected' : ''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('')
     : '<option>Voz padrão do sistema</option>';
-  const psel = $('#voicePtSelect'); if(!psel) return;
-  const bp = TTS.bestPt();
-  psel.innerHTML = TTS.voicesPt.length
-    ? TTS.voicesPt.map(v => `<option value="${esc(v.voiceURI)}" ${bp && v.voiceURI === bp.voiceURI ? 'selected' : ''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('')
-    : '<option>Voz padrão do sistema</option>';
 }
 function renderSettings(){
-  document.querySelectorAll('#teachChips .chip').forEach(c => c.classList.toggle('on', c.dataset.teach === S.teach));
   $('#keyInput').value = S.apiKey;
   $('#keyStatus').textContent = S.apiKey ? '✔ Chave salva' + (S.model ? ' · modelo: ' + S.model : '') : 'Nenhuma chave salva';
   $('#goalInput').value = S.goal;
   $('#rateInput').value = S.rate; $('#rateVal').textContent = (+S.rate).toFixed(2) + 'x';
-  document.querySelectorAll('#modeChips .chip').forEach(c => c.classList.toggle('on', c.dataset.mode === S.mode));
+  document.querySelectorAll('#levelChips .chip').forEach(c => c.classList.toggle('on', c.dataset.level === S.level));
   renderModelSelect(); renderVoiceSelect(); renderDiag();
 }
 $('#saveKeyBtn').addEventListener('click', async () => {
@@ -1084,24 +849,17 @@ $('#saveKeyBtn').addEventListener('click', async () => {
     await gemini([{ role:'user', parts:[{ text:'Reply with exactly: OK' }] }], { temperature:0 });
     $('#keyStatus').textContent = '✔ Funcionando · modelo: ' + S.model;
     renderModelSelect(); updateSetupCard();
-    toast('Chave funcionando. Bora treinar!');
+    toast('Chave funcionando!');
   }catch(e){ $('#keyStatus').textContent = '✖ ' + friendly(e); }
 });
 $('#modelSelect').addEventListener('change', e => { S.model = e.target.value; saveSettings(); toast(S.model ? 'Modelo: ' + S.model : 'Modelo automático'); });
-$('#modeChips').addEventListener('click', e => { const c = e.target.closest('[data-mode]'); if(!c) return; S.mode = c.dataset.mode; saveSettings(); renderSettings(); });
-$('#goalInput').addEventListener('change', e => { S.goal = Math.max(1, Math.min(120, +e.target.value || 10)); saveSettings(); renderPill(); });
+$('#levelChips').addEventListener('click', e => { const c = e.target.closest('[data-level]'); if(!c) return; S.level = c.dataset.level; saveSettings(); renderSettings(); toast('Nível ' + S.level + ' nas próximas notícias'); });
+$('#goalInput').addEventListener('change', e => { S.goal = Math.max(1, Math.min(20, +e.target.value || 2)); saveSettings(); renderPill(); });
 $('#rateInput').addEventListener('input', e => { S.rate = +e.target.value; $('#rateVal').textContent = S.rate.toFixed(2) + 'x'; saveSettings(); });
 $('#voiceSelect').addEventListener('change', e => { S.voiceURI = e.target.value; saveSettings(); });
-$('#voicePtSelect').addEventListener('change', e => { S.voicePtURI = e.target.value; saveSettings(); });
-$('#teachChips').addEventListener('click', e => { const c = e.target.closest('[data-teach]'); if(!c) return; S.teach = c.dataset.teach; saveSettings(); renderSettings(); toast(S.teach === 'pt' ? 'Vale a partir da próxima conversa' : 'Imersão total a partir da próxima conversa'); });
-$('#testVoiceBtn').addEventListener('click', () => {
-  const g = S.mode === 'gentil';
-  TTS.speakSegs(S.teach === 'pt'
-    ? [{ lang:'pt', text: g ? 'Oi Thiago! Vamos treinar. Repete comigo:' : 'Escuta aqui, Thiago. Teu inglês tá uma merda, mas hoje a gente conserta. Repete comigo:' }, { lang:'en', text:'I am ready to practice.' }]
-    : [{ lang:'en', text: g ? 'Hi Thiago! Ready to practice your English today?' : 'Listen up, Thiago. Your English is a damn mess, and we are going to fix it today.' }]);
-});
+$('#testVoiceBtn').addEventListener('click', () => TTS.speak('Good morning, Thiago. Here are today\'s top stories.'));
 $('#exportBtn').addEventListener('click', async () => {
-  const data = JSON.stringify({ v:1, exported: new Date().toISOString(), settings: Object.assign({}, S, { apiKey:'' }), cards, errors: errorsBank, stats });
+  const data = JSON.stringify({ v:3, exported: new Date().toISOString(), settings: Object.assign({}, S, { apiKey:'' }), cards, stats, readIds });
   try{ await navigator.clipboard.writeText(data); toast('Backup copiado. Cole nas suas Notas.'); }
   catch(e){ $('#importArea').style.display = ''; $('#importArea').value = data; $('#importArea').select(); toast('Copie o texto do campo abaixo'); }
 });
@@ -1111,38 +869,41 @@ $('#importBtn').addEventListener('click', () => {
   try{
     const d = JSON.parse(a.value);
     if(!Array.isArray(d.cards)) throw 0;
-    cards = d.cards; errorsBank = d.errors || []; stats = d.stats || {};
-    S = Object.assign({}, DEFAULTS, d.settings || {}, { apiKey: S.apiKey });
-    saveCards(); saveErrors(); saveStats(); saveSettings();
+    cards = d.cards; stats = d.stats || {}; readIds = d.readIds || {};
+    S = Object.assign({}, DEFAULTS, d.settings || {}, { apiKey: S.apiKey, v: 3 });
+    saveCards(); saveStats(); saveSettings(); LS.set('readIds', readIds);
     a.value = ''; a.style.display = 'none'; renderSettings(); renderPill(); toast('Backup restaurado');
   }catch(e){ toast('Backup inválido'); }
 });
 let wipeArmed = false;
 $('#wipeBtn').addEventListener('click', e => {
   if(!wipeArmed){ wipeArmed = true; e.target.textContent = 'Toque de novo para APAGAR TUDO'; setTimeout(() => { wipeArmed = false; e.target.textContent = 'Apagar todos os dados'; }, 4000); return; }
-  cards = []; errorsBank = []; stats = {}; saveCards(); saveErrors(); saveStats();
+  cards = []; stats = {}; readIds = {}; saveCards(); saveStats(); LS.set('readIds', readIds); pruneCache();
   wipeArmed = false; e.target.textContent = 'Apagar todos os dados'; renderPill(); toast('Dados apagados (a chave continua salva)');
 });
 
 /* ================= Navigation ================= */
 function updateSetupCard(){ $('#setupNeeded').style.display = S.apiKey ? 'none' : ''; }
 function go(tab){
-  if(tab !== 'falar' && Rec.recording){ clearInterval(recTimer); Rec.stop(); setMic('idle', 'Toque para falar'); }
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'v-' + tab));
   document.querySelectorAll('#tabbar button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-  $('#dock').style.display = tab === 'falar' && Conv.active ? '' : 'none';
+  if(tab !== 'noticias') TTS.stop();
   if(tab === 'revisar') renderReview();
   if(tab === 'progresso') renderProgress();
   if(tab === 'ajustes') renderSettings();
-  if(tab === 'falar') updateSetupCard();
+  if(tab === 'noticias'){ updateSetupCard(); if(S.apiKey && !currentList && $('#articleView').style.display === 'none') loadNews(); }
   window.scrollTo(0, 0);
 }
 $('#tabbar').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if(b) go(b.dataset.tab); });
 document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if(g) go(g.dataset.go); });
-document.addEventListener('visibilitychange', () => { if(document.hidden && Rec.recording){ clearInterval(recTimer); Rec.stop(); setMic('idle', 'Toque para falar'); } if(!document.hidden){ updateBadge(); renderPill(); } });
+document.addEventListener('visibilitychange', () => { if(!document.hidden){ updateBadge(); renderPill(); } });
 
 /* ================= Init ================= */
-renderScenarios(); renderPill(); updateBadge(); updateSetupCard();
+// Clean up data from the old speaking version
+['errors'].forEach(k => LS.del(k));
+pruneCache();
+renderCats(); renderPill(); updateBadge(); updateSetupCard();
+if(S.apiKey) loadNews();
 </script>
 </body>
 </html>
