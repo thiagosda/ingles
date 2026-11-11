@@ -249,6 +249,11 @@ a{color:var(--blue)}
       <p class="small muted">Dica: no iPhone, em Ajustes → Acessibilidade → Conteúdo Falado → Vozes → Inglês, baixe uma voz "Aprimorada" ou "Premium" para soar mais natural.</p>
     </div>
     <div class="card">
+      <b>Diagnóstico</b>
+      <p class="small muted">Últimas chamadas ao Gemini: modelo, tempo e erro. Se algo falhar, me manda print daqui.</p>
+      <div id="diagBox"></div>
+    </div>
+    <div class="card">
       <b>Backup</b>
       <p class="small muted">Seus dados ficam só neste aparelho. Faça backup de vez em quando.</p>
       <div class="row">
@@ -295,6 +300,7 @@ const LS = {
 };
 const DEFAULTS = { apiKey:'', model:'', voiceURI:'', voicePtURI:'', mode:'carrasco', teach:'pt', rate:0.95, goal:10 };
 let S = Object.assign({}, DEFAULTS, LS.get('settings', {}));
+if((S.v || 1) < 2){ S.model = ''; S.think = {}; S.v = 2; LS.set('settings', S); }
 let cards = LS.get('cards', []);
 let errorsBank = LS.get('errors', []);
 let stats = LS.get('stats', {});
@@ -349,7 +355,8 @@ async function listModels(){
 function rankModel(n){
   const m = n.match(/gemini-(\d+(?:\.\d+)?)/);
   let s = m ? parseFloat(m[1]) * 10 : 0;
-  if(/flash-lite/.test(n)) s += 3; else if(/flash/.test(n)) s += 5;
+  // Speed first: flash-lite answers fastest and has the most generous free quota.
+  if(/flash-lite/.test(n)) s += 30; else if(/flash/.test(n)) s += 5;
   if(/preview/.test(n)) s -= 4;
   if(/latest/.test(n)) s -= 1;
   if(/-\d{3}$/.test(n)) s -= 0.5;
@@ -375,23 +382,61 @@ async function gemini(contents, opt = {}){
   if(opt.system) body.systemInstruction = { parts:[{ text: opt.system }] };
   if(opt.schema){ body.generationConfig.responseMimeType = 'application/json'; body.generationConfig.responseSchema = opt.schema; }
   const tried = new Set();
-  for(let attempt = 0; attempt < 5; attempt++){
+  S.think = S.think || {};
+  for(let attempt = 0; attempt < 7; attempt++){
     const model = S.model || await autoPickModel(tried);
-    const r = await fetch(API + '/models/' + encodeURIComponent(model) + ':generateContent', {
-      method:'POST', headers:{ 'Content-Type':'application/json', 'x-goog-api-key': S.apiKey }, body: JSON.stringify(body)
-    });
+    const level = S.think[model] || 'minimal';
+    if(level === 'none') delete body.generationConfig.thinkingConfig;
+    else body.generationConfig.thinkingConfig = { thinkingLevel: level };
+    const ctrl = new AbortController(), t0 = Date.now();
+    const timer = setTimeout(() => ctrl.abort(), opt.timeout || 45000);
+    let r;
+    try{
+      r = await fetch(API + '/models/' + encodeURIComponent(model) + ':generateContent', {
+        method:'POST', headers:{ 'Content-Type':'application/json', 'x-goog-api-key': S.apiKey }, body: JSON.stringify(body), signal: ctrl.signal
+      });
+    }catch(e){
+      clearTimeout(timer);
+      const err = e.name === 'AbortError' ? new Error('O Gemini demorou demais (' + model + '). Tente de novo.') : e;
+      logDiag(model, Date.now() - t0, err.message); throw err;
+    }
+    clearTimeout(timer);
     if(r.ok){
-      const t = partsText(await r.json());
-      return opt.schema ? parseJSON(t) : t.trim();
+      let out;
+      try{ const t = partsText(await r.json()); out = opt.schema ? parseJSON(t) : t.trim(); }
+      catch(e){ logDiag(model, Date.now() - t0, e.message); throw e; }
+      logDiag(model, Date.now() - t0, 'ok');
+      return out;
     }
     const err = await apiError(r);
+    logDiag(model, Date.now() - t0, err.status + ' ' + err.message.slice(0, 160));
+    if(err.status === 400 && /thinking/i.test(err.message)){
+      S.think[model] = level === 'minimal' ? 'low' : 'none'; saveSettings(); continue;
+    }
     const quotaZero = err.status === 429 && /limit:\s*0\b/.test(err.message);
     const badModel = err.status === 404 || quotaZero ||
       (err.status === 400 && /not (supported|found|available)|does not support|unsupported/i.test(err.message) && !/api key/i.test(err.message));
     if(badModel){ tried.add(model); S.model = ''; saveSettings(); continue; }
+    if(err.status === 429 || err.status === 503){
+      const m = err.message.match(/retry in ([\d.]+)s/i);
+      const wait = m ? Math.ceil(parseFloat(m[1])) : (err.status === 503 ? 2 : 0);
+      if(wait && wait <= 20 && !opt.retried){ opt.retried = true; toast('Limite por minuto do Gemini. Tentando de novo em ' + wait + 's...', wait * 1000); await new Promise(res => setTimeout(res, wait * 1000)); continue; }
+    }
     throw err;
   }
   throw new Error('Nenhum modelo gratuito funcionou com sua chave.');
+}
+let diag = LS.get('diag', []);
+function logDiag(model, ms, status){
+  diag.unshift({ at: new Date().toLocaleTimeString('pt-BR'), model, ms, status });
+  diag = diag.slice(0, 12); LS.set('diag', diag);
+  const box = document.getElementById('diagBox'); if(box) renderDiag();
+}
+function renderDiag(){
+  const box = document.getElementById('diagBox'); if(!box) return;
+  box.innerHTML = diag.length
+    ? diag.map(d => `<div class="errrow"><div><b>${esc(d.at)}</b> · ${esc(d.model)}<div class="small ${d.status === 'ok' ? '' : 'muted'}" style="${d.status === 'ok' ? 'color:var(--green)' : 'color:#ff8a8a'}">${esc(d.status)}</div></div><span class="cnt">${(d.ms / 1000).toFixed(1)}s</span></div>`).join('')
+    : '<div class="small muted">Nenhuma chamada ainda.</div>';
 }
 function parseJSON(t){
   try{ return JSON.parse(t); }catch(e){}
@@ -771,7 +816,9 @@ async function micTap(){
 }
 async function sendTurn({ audio, text, seconds }){
   Conv.busy = true;
-  setMic('busy', '<span class="spin"></span> O carrasco está ouvindo...');
+  const tw = Date.now();
+  setMic('busy', '<span class="spin"></span> Analisando... 0s');
+  const waitT = setInterval(() => { if(Conv.busy) $('#micState').innerHTML = '<span class="spin"></span> Analisando... ' + Math.round((Date.now() - tw) / 1000) + 's'; }, 500);
   const contents = Conv.history.slice(-20).map(h => ({ role: h.role, parts:[{ text: h.text }] }));
   if(contents.length && contents[0].role === 'model') contents.unshift({ role:'user', parts:[{ text:'(session start)' }] });
   const parts = audio
@@ -785,14 +832,16 @@ async function sendTurn({ audio, text, seconds }){
     res.errors.forEach(logError);
     const t = today(); t.turns++; if(seconds) t.speak += seconds; saveStats(); renderPill();
     Conv.history.push({ role:'user', text: res.transcript || text || '' });
+    clearInterval(waitT);
     const segs = cleanSegs(res.speech, res.reply);
     Conv.history.push({ role:'model', text: res.reply || segsText(segs) });
     addAiMsg(segs, res.reply_pt);
     Conv.busy = false;
     speakThen(segs);
   }catch(e){
+    clearInterval(waitT);
     Conv.busy = false;
-    toast(friendly(e), 4500);
+    toast(friendly(e), 6000);
     setMic('idle', 'Deu erro. Toque para tentar de novo.');
   }
 }
@@ -892,7 +941,10 @@ Then list in "vocab" the 8-15 most useful or difficult terms for a B1 Brazilian 
     readData = await gemini([{ role:'user', parts:[{ text: prompt }] }], { schema: READ_SCHEMA, temperature: topic ? 0.9 : 0.2 });
     readData.sentences = readData.sentences || []; readData.vocab = readData.vocab || [];
     renderRead();
-  }catch(e){ out.innerHTML = ''; toast(friendly(e), 4500); }
+  }catch(e){
+    out.innerHTML = `<div class="card"><b style="color:#ff8a8a">Não consegui ${topic ? 'gerar o texto' : 'analisar o texto'}.</b><p class="small">${esc(friendly(e))}</p><button class="btn block" id="readRetry">Tentar de novo</button></div>`;
+    $('#readRetry').onclick = () => analyze(text, topic);
+  }
 }
 function vocabFor(word){
   const w = norm(word);
@@ -1020,7 +1072,7 @@ function renderSettings(){
   $('#goalInput').value = S.goal;
   $('#rateInput').value = S.rate; $('#rateVal').textContent = (+S.rate).toFixed(2) + 'x';
   document.querySelectorAll('#modeChips .chip').forEach(c => c.classList.toggle('on', c.dataset.mode === S.mode));
-  renderModelSelect(); renderVoiceSelect();
+  renderModelSelect(); renderVoiceSelect(); renderDiag();
 }
 $('#saveKeyBtn').addEventListener('click', async () => {
   const k = $('#keyInput').value.trim();
