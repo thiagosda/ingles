@@ -61,6 +61,7 @@ h3{font-size:15px;margin:18px 0 8px;color:var(--muted);text-transform:uppercase;
 #chat{display:flex;flex-direction:column;gap:10px;padding-bottom:210px}
 .msg{max-width:88%;padding:10px 12px;border-radius:16px;word-wrap:break-word}
 .msg .t{white-space:pre-wrap}
+.seg-en{color:#8fc8ff;font-weight:600}
 .msg.ai{background:var(--panel2);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
 .msg.me{background:#2a1416;border:1px solid #4a1d21;align-self:flex-end;border-bottom-right-radius:4px}
 .msg .tools{display:flex;gap:12px;margin-top:6px;font-size:13px;color:var(--muted)}
@@ -227,6 +228,12 @@ a{color:var(--blue)}
         <button class="chip" data-mode="carrasco">🔥 Carrasco sem filtro</button>
         <button class="chip" data-mode="gentil">🙂 Treinador gentil</button>
       </div>
+      <label class="f">Idioma do professor</label>
+      <div class="chips" id="teachChips">
+        <button class="chip" data-teach="pt">🇧🇷 Explica em português</button>
+        <button class="chip" data-teach="en">🇺🇸 Só inglês (imersão)</button>
+      </div>
+      <p class="small muted" style="margin:6px 0 0">Em português, ele explica e xinga em PT, mas a frase certa e a pergunta vêm em inglês para você responder em inglês.</p>
       <label class="f">Meta diária de fala (minutos)</label>
       <input id="goalInput" type="number" min="1" max="120" inputmode="numeric">
     </div>
@@ -234,6 +241,8 @@ a{color:var(--blue)}
       <b>Voz</b>
       <label class="f">Voz em inglês</label>
       <select id="voiceSelect"></select>
+      <label class="f">Voz em português</label>
+      <select id="voicePtSelect"></select>
       <label class="f">Velocidade: <span id="rateVal"></span></label>
       <input id="rateInput" type="range" min="0.6" max="1.2" step="0.05" style="padding:0">
       <button class="btn block" id="testVoiceBtn" style="margin-top:10px">Testar voz</button>
@@ -284,7 +293,7 @@ const LS = {
   get(k, d){ try{ const v = localStorage.getItem('ce_'+k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem('ce_'+k, JSON.stringify(v)); }catch(e){ toast('Não consegui salvar no aparelho'); } }
 };
-const DEFAULTS = { apiKey:'', model:'', voiceURI:'', mode:'carrasco', rate:0.95, goal:10 };
+const DEFAULTS = { apiKey:'', model:'', voiceURI:'', voicePtURI:'', mode:'carrasco', teach:'pt', rate:0.95, goal:10 };
 let S = Object.assign({}, DEFAULTS, LS.get('settings', {}));
 let cards = LS.get('cards', []);
 let errorsBank = LS.get('errors', []);
@@ -393,34 +402,45 @@ function parseJSON(t){
 
 /* ================= Voice out (TTS) ================= */
 const TTS = {
-  voices: [], unlocked: false,
+  voices: [], voicesPt: [], unlocked: false,
   load(){
-    try{ this.voices = speechSynthesis.getVoices().filter(v => /^en[-_]/i.test(v.lang)); }catch(e){ this.voices = []; }
+    try{
+      const all = speechSynthesis.getVoices();
+      this.voices = all.filter(v => /^en[-_]/i.test(v.lang));
+      const br = all.filter(v => /^pt[-_]BR/i.test(v.lang));
+      this.voicesPt = br.length ? br : all.filter(v => /^pt/i.test(v.lang));
+    }catch(e){ this.voices = []; this.voicesPt = []; }
     renderVoiceSelect();
   },
-  best(){
-    if(S.voiceURI){ const v = this.voices.find(v => v.voiceURI === S.voiceURI); if(v) return v; }
-    const us = this.voices.filter(v => /en[-_]US/i.test(v.lang));
-    const pool = us.length ? us : this.voices;
+  pickFrom(pool, uri, names){
+    if(uri){ const v = pool.find(v => v.voiceURI === uri); if(v) return v; }
     return pool.find(v => /premium/i.test(v.name)) || pool.find(v => /enhanced|aprimorad/i.test(v.name)) ||
-           pool.find(v => /samantha|ava|allison|evan|nathan|zoe/i.test(v.name)) || pool[0] || null;
+           pool.find(v => names.test(v.name)) || pool[0] || null;
   },
+  best(){
+    const us = this.voices.filter(v => /en[-_]US/i.test(v.lang));
+    return this.pickFrom(us.length ? us : this.voices, S.voiceURI, /samantha|ava|allison|evan|nathan|zoe/i);
+  },
+  bestPt(){ return this.pickFrom(this.voicesPt, S.voicePtURI, /luciana|felipe|fernanda/i); },
   unlock(){
     if(this.unlocked || !('speechSynthesis' in window)) return;
     try{ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); this.unlocked = true; }catch(e){}
   },
-  speak(text, onend){
+  speak(text, onend){ this.speakSegs([{ lang:'en', text }], onend); },
+  speakSegs(segs, onend){
     if(!('speechSynthesis' in window)){ onend && onend(); return; }
     try{ speechSynthesis.cancel(); }catch(e){}
-    const clean = String(text).replace(/[*_#`>\[\]]/g, '').replace(/\s+/g, ' ').trim();
-    if(!clean){ onend && onend(); return; }
-    const u = new SpeechSynthesisUtterance(clean);
-    const v = this.best();
-    if(v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-US';
-    u.rate = S.rate || 1;
+    const list = (segs || []).map(s => ({ lang: s.lang === 'pt' ? 'pt' : 'en', text: String(s.text || '').replace(/[*_#`>\[\]]/g, '').replace(/\s+/g, ' ').trim() })).filter(s => s.text);
+    if(!list.length){ onend && onend(); return; }
     let done = false; const fin = () => { if(!done){ done = true; onend && onend(); } };
-    u.onend = fin; u.onerror = fin;
-    speechSynthesis.speak(u);
+    list.forEach((s, i) => {
+      const u = new SpeechSynthesisUtterance(s.text);
+      const v = s.lang === 'pt' ? this.bestPt() : this.best();
+      if(v){ u.voice = v; u.lang = v.lang; } else u.lang = s.lang === 'pt' ? 'pt-BR' : 'en-US';
+      u.rate = s.lang === 'pt' ? Math.max(1, S.rate || 1) : (S.rate || 1);
+      if(i === list.length - 1){ u.onend = fin; u.onerror = fin; }
+      speechSynthesis.speak(u);
+    });
   },
   stop(){ try{ speechSynthesis.cancel(); }catch(e){} }
 };
@@ -585,10 +605,16 @@ function systemPrompt(sc, charName){
   const scen = sc.id === 'personagem'
     ? 'Roleplay: you ARE ' + charName + ' (a character from a movie/series he loves). Talk with that character\'s personality, catchphrase style and references to their world, while still acting as his English coach who corrects every mistake.'
     : sc.desc;
-  const carrasco = `You are THE CARRASCO, a brutally rude, foul-mouthed English speaking coach for Thiago, a Brazilian at B1 (intermediate) level. Thiago EXPLICITLY asked to be corrected immediately in a rude, profane, humiliating way, because shame makes him learn faster. He consents. Swearing (fuck, shit, damn, etc.) is welcome and expected.
+  const pt = S.teach === 'pt';
+  const carrasco = `You are THE CARRASCO, a brutally rude, foul-mouthed English speaking coach for Thiago, a Brazilian at B1 (intermediate) level. Thiago EXPLICITLY asked to be corrected immediately in a rude, profane, humiliating way, because shame makes him learn faster. He consents. Swearing is welcome and expected (${pt ? 'in Portuguese: porra, caralho, puta merda, vai se foder; in English: fuck, shit, damn' : 'fuck, shit, damn, etc.'}).
 Hard limits: your insults target ONLY his English mistakes, laziness and excuses. Never attack his race, nationality, family, body, sexuality or identity. No slurs.`;
   const gentil = `You are a warm, encouraging but honest English speaking coach for Thiago, a Brazilian at B1 (intermediate) level. You correct every mistake clearly and kindly.`;
+  const langRules = pt
+    ? `LANGUAGE (Portuguese teacher mode): as the coach you talk to him in natural Brazilian Portuguese — roasts, explanations, orders and tips are in Portuguese, like a Brazilian teacher. Everything he must SAY or LEARN in English stays in English: the corrected sentence he must repeat, useful expressions, and the question that continues the scenario. ALWAYS end with the scenario question in English, so he answers in English. Roleplay characters (tourist, interviewer, etc.) speak only English; your coach comments are in Portuguese.`
+    : `LANGUAGE (immersion mode): speak only English. Simple vocabulary a B1 student understands.`;
   return (S.mode === 'gentil' ? gentil : carrasco) + `
+
+${langRules}
 
 SCENARIO: ${scen}
 
@@ -600,11 +626,15 @@ HOW EACH TURN WORKS (you receive his audio or typed text):
    - If there were mistakes: ${S.mode === 'gentil' ? 'point them out kindly' : 'roast him hard in ONE short sentence'}, say the correct version, and ORDER him to repeat it.
    - If his message was a repetition you ordered: check it strictly. If still wrong, ${S.mode === 'gentil' ? 'help him again' : 'destroy him and make him repeat again'}. If right, ${S.mode === 'gentil' ? 'praise him briefly' : 'give a grudging, backhanded compliment'} and move on.
    - If it was correct: ${S.mode === 'gentil' ? 'praise him briefly' : 'a reluctant, backhanded compliment'}.
-   - Then keep the scenario going with exactly ONE question or prompt so he keeps talking.
-   - Max 45 words. Simple vocabulary a B1 student understands. Natural spoken American English. No emojis, no markdown, no stage directions, no quotes around the whole thing.
-5. "reply_pt": Brazilian Portuguese translation of "reply".
+   - Then keep the scenario going with exactly ONE question or prompt in English so he keeps talking.
+   - Max ${pt ? 60 : 45} words. Follow the LANGUAGE rules. English parts: natural spoken American English. No emojis, no markdown, no stage directions, no quotes around the whole thing.
+5. "speech": the same "reply" split, in order, into segments, each tagged "lang": "pt" or "en" and containing ONE language only (it is read aloud by a Portuguese voice or an English voice). ${pt ? 'Example: [{"lang":"pt","text":"Porra, Thiago, passado existe! Repete comigo:"},{"lang":"en","text":"Yesterday I went to the beach."},{"lang":"pt","text":"Agora responde:"},{"lang":"en","text":"What did you eat there?"}]' : 'In immersion mode this is a single "en" segment equal to "reply".'}
+6. "reply_pt": full Brazilian Portuguese translation of "reply".
 His speaking is the priority: make him talk more than you.`;
 }
+const SEG_SCHEMA = { type:'ARRAY', items:{ type:'OBJECT', properties:{ lang:{ type:'STRING', enum:['pt','en'] }, text:{ type:'STRING' } }, required:['lang','text'] } };
+const OPEN_SCHEMA = { type:'OBJECT', properties:{ speech: SEG_SCHEMA }, required:['speech'] };
+const segsText = segs => (segs || []).map(s => s.text).join(' ').replace(/\s+/g, ' ').trim();
 const TURN_SCHEMA = {
   type:'OBJECT',
   properties:{
@@ -613,9 +643,10 @@ const TURN_SCHEMA = {
     corrected:{ type:'STRING' },
     errors:{ type:'ARRAY', items:{ type:'OBJECT', properties:{ wrong:{type:'STRING'}, right:{type:'STRING'}, why_pt:{type:'STRING'} }, required:['wrong','right','why_pt'] } },
     reply:{ type:'STRING' },
+    speech: SEG_SCHEMA,
     reply_pt:{ type:'STRING' }
   },
-  required:['transcript','has_errors','corrected','errors','reply','reply_pt']
+  required:['transcript','has_errors','corrected','errors','reply','speech','reply_pt']
 };
 
 /* ================= Conversation ================= */
@@ -639,12 +670,15 @@ function setMic(state, text){
 }
 function scrollChat(){ requestAnimationFrame(() => window.scrollTo({ top: document.body.scrollHeight, behavior:'smooth' })); }
 
-function addAiMsg(text, pt){
+function addAiMsg(segs, pt){
   const div = document.createElement('div');
   div.className = 'msg ai';
-  div.innerHTML = `<div class="t">${esc(text)}</div>${pt ? `<div class="pt">${esc(pt)}</div>` : ''}
-    <div class="tools"><button data-a="say">🔊 Ouvir</button>${pt ? '<button data-a="pt">🇧🇷 Tradução</button>' : ''}</div>`;
-  div.querySelector('[data-a=say]').onclick = () => TTS.speak(text);
+  const body = segs.map(s => s.lang === 'en' ? `<span class="seg-en">${esc(s.text)}</span>` : `<span class="seg-pt">${esc(s.text)}</span>`).join(' ');
+  const hasEn = segs.some(s => s.lang === 'en'), hasPt = segs.some(s => s.lang === 'pt');
+  const showTr = pt && !(hasPt && !hasEn);
+  div.innerHTML = `<div class="t">${body}</div>${showTr ? `<div class="pt">${esc(pt)}</div>` : ''}
+    <div class="tools"><button data-a="say">🔊 Ouvir</button>${showTr ? '<button data-a="pt">🇧🇷 Tradução</button>' : ''}</div>`;
+  div.querySelector('[data-a=say]').onclick = () => TTS.speakSegs(segs);
   const ptb = div.querySelector('[data-a=pt]'); if(ptb) ptb.onclick = () => div.querySelector('.pt').classList.toggle('show');
   $('#chat').appendChild(div); scrollChat();
   return div;
@@ -686,18 +720,23 @@ async function startSession(){
   setMic('busy', '<span class="spin"></span> Chamando o carrasco...');
   Conv.busy = true;
   try{
-    const open = await gemini([{ role:'user', parts:[{ text:'Start the session now. Say your opening line to Thiago (max 30 words), in character, ending with one question for him. Output only the spoken line, plain text.' }] }],
-      { system: systemPrompt(sc, charName) });
-    Conv.history.push({ role:'model', text: open });
-    addAiMsg(open);
-    speakThen(open);
+    const o = await gemini([{ role:'user', parts:[{ text:'Start the session now. Say your opening line to Thiago (max 35 words), in character, following the LANGUAGE rules, ending with one question in English for him. Return it as "speech" segments tagged "pt" or "en".' }] }],
+      { system: systemPrompt(sc, charName), schema: OPEN_SCHEMA });
+    const segs = cleanSegs(o.speech);
+    Conv.history.push({ role:'model', text: segsText(segs) });
+    addAiMsg(segs);
+    speakThen(segs);
   }catch(e){
     toast(friendly(e), 4500); setMic('idle', 'Toque para falar');
   }finally{ Conv.busy = false; }
 }
-function speakThen(text){
+function cleanSegs(segs, fallback){
+  const out = (Array.isArray(segs) ? segs : []).filter(s => s && s.text && String(s.text).trim()).map(s => ({ lang: s.lang === 'pt' ? 'pt' : 'en', text: String(s.text).trim() }));
+  return out.length ? out : [{ lang:'en', text: fallback || '...' }];
+}
+function speakThen(segs){
   setMic('speaking', 'Falando... toque no microfone para responder');
-  TTS.speak(text, () => { if(!Rec.recording && !Conv.busy) setMic('idle', 'Toque para falar'); });
+  TTS.speakSegs(segs, () => { if(!Rec.recording && !Conv.busy) setMic('idle', 'Toque para falar'); });
 }
 function endSession(){
   TTS.stop(); if(Rec.recording) Rec.stop(); Rec.release();
@@ -746,10 +785,11 @@ async function sendTurn({ audio, text, seconds }){
     res.errors.forEach(logError);
     const t = today(); t.turns++; if(seconds) t.speak += seconds; saveStats(); renderPill();
     Conv.history.push({ role:'user', text: res.transcript || text || '' });
-    Conv.history.push({ role:'model', text: res.reply });
-    addAiMsg(res.reply, res.reply_pt);
+    const segs = cleanSegs(res.speech, res.reply);
+    Conv.history.push({ role:'model', text: res.reply || segsText(segs) });
+    addAiMsg(segs, res.reply_pt);
     Conv.busy = false;
-    speakThen(res.reply);
+    speakThen(segs);
   }catch(e){
     Conv.busy = false;
     toast(friendly(e), 4500);
@@ -967,8 +1007,14 @@ function renderVoiceSelect(){
   sel.innerHTML = TTS.voices.length
     ? TTS.voices.map(v => `<option value="${esc(v.voiceURI)}" ${best && v.voiceURI === best.voiceURI ? 'selected' : ''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('')
     : '<option>Voz padrão do sistema</option>';
+  const psel = $('#voicePtSelect'); if(!psel) return;
+  const bp = TTS.bestPt();
+  psel.innerHTML = TTS.voicesPt.length
+    ? TTS.voicesPt.map(v => `<option value="${esc(v.voiceURI)}" ${bp && v.voiceURI === bp.voiceURI ? 'selected' : ''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('')
+    : '<option>Voz padrão do sistema</option>';
 }
 function renderSettings(){
+  document.querySelectorAll('#teachChips .chip').forEach(c => c.classList.toggle('on', c.dataset.teach === S.teach));
   $('#keyInput').value = S.apiKey;
   $('#keyStatus').textContent = S.apiKey ? '✔ Chave salva' + (S.model ? ' · modelo: ' + S.model : '') : 'Nenhuma chave salva';
   $('#goalInput').value = S.goal;
@@ -994,7 +1040,14 @@ $('#modeChips').addEventListener('click', e => { const c = e.target.closest('[da
 $('#goalInput').addEventListener('change', e => { S.goal = Math.max(1, Math.min(120, +e.target.value || 10)); saveSettings(); renderPill(); });
 $('#rateInput').addEventListener('input', e => { S.rate = +e.target.value; $('#rateVal').textContent = S.rate.toFixed(2) + 'x'; saveSettings(); });
 $('#voiceSelect').addEventListener('change', e => { S.voiceURI = e.target.value; saveSettings(); });
-$('#testVoiceBtn').addEventListener('click', () => TTS.speak(S.mode === 'gentil' ? 'Hi Thiago! Ready to practice your English today?' : 'Listen up, Thiago. Your English is a damn mess, and we are going to fix it today.'));
+$('#voicePtSelect').addEventListener('change', e => { S.voicePtURI = e.target.value; saveSettings(); });
+$('#teachChips').addEventListener('click', e => { const c = e.target.closest('[data-teach]'); if(!c) return; S.teach = c.dataset.teach; saveSettings(); renderSettings(); toast(S.teach === 'pt' ? 'Vale a partir da próxima conversa' : 'Imersão total a partir da próxima conversa'); });
+$('#testVoiceBtn').addEventListener('click', () => {
+  const g = S.mode === 'gentil';
+  TTS.speakSegs(S.teach === 'pt'
+    ? [{ lang:'pt', text: g ? 'Oi Thiago! Vamos treinar. Repete comigo:' : 'Escuta aqui, Thiago. Teu inglês tá uma merda, mas hoje a gente conserta. Repete comigo:' }, { lang:'en', text:'I am ready to practice.' }]
+    : [{ lang:'en', text: g ? 'Hi Thiago! Ready to practice your English today?' : 'Listen up, Thiago. Your English is a damn mess, and we are going to fix it today.' }]);
+});
 $('#exportBtn').addEventListener('click', async () => {
   const data = JSON.stringify({ v:1, exported: new Date().toISOString(), settings: Object.assign({}, S, { apiKey:'' }), cards, errors: errorsBank, stats });
   try{ await navigator.clipboard.writeText(data); toast('Backup copiado. Cole nas suas Notas.'); }
