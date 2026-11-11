@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Carrasco">
+<meta name="theme-color" content="#0c0c10">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<title>Carrasco English</title>
+<style>
+:root{
+  --bg:#0c0c10; --panel:#16161d; --panel2:#1e1e27; --line:#2a2a36;
+  --text:#f2f2f5; --muted:#9a9aab; --red:#ff3b3b; --red2:#c41d1d;
+  --green:#3ddc84; --yellow:#ffc53d; --blue:#5aa9ff;
+  --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);
+  font:16px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,textarea,select{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);
+  border-radius:12px;padding:12px;width:100%;outline:none;font-size:16px}
+textarea{resize:vertical;min-height:120px}
+input:focus,textarea:focus,select:focus{border-color:var(--red)}
+header{position:fixed;top:0;left:0;right:0;z-index:5;padding:calc(var(--sat) + 10px) 16px 10px;
+  display:flex;align-items:center;justify-content:space-between;background:rgba(12,12,16,.92);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo{font-weight:900;letter-spacing:.12em;font-size:15px}
+.logo b{color:var(--red)}
+.pill{font-size:13px;background:var(--panel2);border:1px solid var(--line);padding:5px 10px;border-radius:99px;color:var(--muted)}
+.pill.ok{color:var(--green);border-color:#1f5c3b}
+main{padding:calc(var(--sat) + 64px) 16px calc(var(--sab) + 90px);max-width:640px;margin:0 auto}
+.view{display:none}.view.active{display:block}
+nav.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:5;display:flex;justify-content:space-around;
+  padding:8px 4px calc(var(--sab) + 8px);background:rgba(12,12,16,.95);border-top:1px solid var(--line);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+nav.tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted);padding:4px 0}
+nav.tabbar button .ic{font-size:21px;line-height:1}
+nav.tabbar button.active{color:var(--text)}
+nav.tabbar .badge{background:var(--red);color:#fff;border-radius:99px;font-size:10px;padding:0 5px;margin-left:2px}
+h2{font-size:22px;margin:4px 0 12px}
+h3{font-size:15px;margin:18px 0 8px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.muted{color:var(--muted)} .small{font-size:13px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:12px;
+  background:var(--panel2);border:1px solid var(--line);font-weight:600}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:8px;align-items:center}
+.row > *{flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 12px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);font-size:14px}
+.chip.on{background:var(--red);border-color:var(--red);color:#fff}
+/* Chat */
+#chat{display:flex;flex-direction:column;gap:10px;padding-bottom:210px}
+.msg{max-width:88%;padding:10px 12px;border-radius:16px;word-wrap:break-word}
+.msg .t{white-space:pre-wrap}
+.msg.ai{background:var(--panel2);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.me{background:#2a1416;border:1px solid #4a1d21;align-self:flex-end;border-bottom-right-radius:4px}
+.msg .tools{display:flex;gap:12px;margin-top:6px;font-size:13px;color:var(--muted)}
+.msg .tools button{color:var(--muted);padding:2px 0}
+.msg .pt{margin-top:6px;font-size:14px;color:var(--muted);display:none}
+.msg .pt.show{display:block}
+.fix{margin-top:8px;padding-top:8px;border-top:1px dashed #5a2a2e;font-size:14px}
+.fix .right{color:var(--green);font-weight:600}
+.fix .err{margin-top:4px}
+.bad{color:#ff8a8a;text-decoration:line-through;text-decoration-color:rgba(255,80,80,.7)}
+.okmark{color:var(--green);font-size:13px;margin-top:6px}
+.dock{position:fixed;left:0;right:0;bottom:calc(var(--sab) + 62px);z-index:4;padding:10px 16px 12px;
+  background:linear-gradient(to top,var(--bg) 70%,rgba(12,12,16,0));}
+.dock-inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:8px}
+#mic{width:84px;height:84px;border-radius:50%;background:var(--red);color:#fff;font-size:34px;
+  box-shadow:0 6px 30px rgba(255,59,59,.35);display:flex;align-items:center;justify-content:center;position:relative}
+#mic.rec{background:#fff;color:var(--red);animation:pulse 1.2s infinite}
+#mic.busy{background:var(--panel2);color:var(--muted);box-shadow:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,59,59,.6)}70%{box-shadow:0 0 0 22px rgba(255,59,59,0)}100%{box-shadow:0 0 0 0 rgba(255,59,59,0)}}
+#micState{font-size:13px;color:var(--muted);min-height:18px;text-align:center}
+.typebar{display:flex;gap:8px;width:100%}
+.typebar input{padding:10px 12px}
+.typebar .btn{padding:10px 14px}
+.level{height:4px;width:120px;background:var(--panel2);border-radius:4px;overflow:hidden}
+.level i{display:block;height:100%;width:0;background:var(--red);transition:width .08s}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--muted);border-top-color:transparent;border-radius:50%;animation:sp 0.8s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* Review */
+.flash{min-height:230px;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:10px}
+.flash .front{font-size:20px;font-weight:600}
+.flash .back{font-size:19px;color:var(--green);font-weight:600}
+.flash .note{font-size:14px;color:var(--muted)}
+.flash .tag{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.grades{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.grades button{padding:10px 4px;border-radius:12px;font-weight:700;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.grades button small{font-weight:500;font-size:11px;opacity:.85}
+.g1{background:#3a1416;color:#ff8080}.g2{background:#3a2e12;color:var(--yellow)}
+.g3{background:#123a24;color:var(--green)}.g4{background:#12283a;color:var(--blue)}
+/* Reader */
+.sent{padding:10px 0;border-bottom:1px solid var(--line)}
+.sent:last-child{border-bottom:0}
+.sent .en{font-size:17px;line-height:1.6}
+.sent .en span{border-radius:4px;padding:0 1px}
+.sent .en span.w{cursor:pointer}
+.sent .en span.w:active,.sent .en span.sel{background:#4a1d21}
+.sent .en span.voc{border-bottom:2px dotted var(--yellow)}
+.sent .pt{display:none;color:var(--muted);font-size:14px;margin-top:4px}
+.sent .pt.show{display:block}
+.sent .acts{display:flex;gap:14px;margin-top:4px;font-size:13px;color:var(--muted)}
+.sent .acts button{color:var(--muted)}
+.voc-item{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.voc-item:last-child{border-bottom:0}
+/* Progress */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat .n{font-size:26px;font-weight:800}
+.stat .l{font-size:12px;color:var(--muted)}
+.bars{display:flex;align-items:flex-end;gap:6px;height:110px;padding-top:6px}
+.bars .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.bars .b i{display:block;width:100%;background:var(--red);border-radius:6px 6px 2px 2px;min-height:2px}
+.bars .b.goal i{background:var(--green)}
+.bars .b span{font-size:11px;color:var(--muted)}
+.errrow{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.errrow:last-child{border-bottom:0}
+.cnt{background:var(--panel2);border-radius:99px;padding:1px 8px;font-size:12px;color:var(--yellow);align-self:flex-start;white-space:nowrap}
+/* Sheet & toast */
+#sheetBg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20;display:none}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--panel);border-top:1px solid var(--line);
+  border-radius:20px 20px 0 0;padding:18px 16px calc(var(--sab) + 18px);transform:translateY(105%);transition:transform .25s;max-width:640px;margin:0 auto}
+#sheet.open{transform:none}
+#toast{position:fixed;left:50%;top:calc(var(--sat) + 70px);transform:translateX(-50%) translateY(-20px);opacity:0;z-index:30;
+  background:#2b2b36;border:1px solid var(--line);padding:10px 14px;border-radius:12px;font-size:14px;transition:all .25s;max-width:90%;text-align:center;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%)}
+label.f{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px}
+.empty{text-align:center;padding:30px 10px;color:var(--muted)}
+.steps{padding-left:20px;margin:6px 0}.steps li{margin:4px 0}
+a{color:var(--blue)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">CARRASCO <b>ENGLISH</b></div>
+  <div class="pill" id="todayPill">🎙 0/10 min</div>
+</header>
+
+<main>
+  <!-- FALAR -->
+  <section class="view active" id="v-falar">
+    <div id="setupNeeded" class="card" style="display:none">
+      <b>Falta a chave do Gemini.</b>
+      <p class="muted small">Ela é grátis e fica salva só neste aparelho.</p>
+      <button class="btn primary block" data-go="ajustes">Configurar agora</button>
+    </div>
+    <div id="scenarioBox">
+      <h2>Quem vai te humilhar hoje?</h2>
+      <div class="chips" id="scenarios"></div>
+      <div id="charBox" style="display:none;margin-top:10px">
+        <input id="charInput" placeholder="Ex: Shrek, Walter White, Michael Scott, Ron Weasley...">
+      </div>
+      <button class="btn primary block" id="startBtn" style="margin-top:14px">Começar</button>
+      <p class="muted small" style="margin-top:10px">Toque no microfone, fale em inglês, toque de novo para enviar. Se errar, ele corrige na hora e manda você repetir.</p>
+    </div>
+    <div id="chatWrap" style="display:none">
+      <div class="row" style="margin-bottom:10px">
+        <div class="small muted" id="sessionTitle"></div>
+        <button class="btn" id="endBtn" style="flex:0 0 auto;padding:8px 12px;font-size:14px">Encerrar</button>
+      </div>
+      <div id="chat"></div>
+    </div>
+  </section>
+
+  <!-- REVISAR -->
+  <section class="view" id="v-revisar">
+    <h2>Revisão</h2>
+    <div id="reviewBox"></div>
+  </section>
+
+  <!-- LER -->
+  <section class="view" id="v-ler">
+    <h2>Ler e ouvir</h2>
+    <div class="card">
+      <label class="f" style="margin-top:0">Gerar texto no seu nível sobre:</label>
+      <div class="row">
+        <input id="genTopic" placeholder="Ex: agentes de IA, Jericoacoara, NBA...">
+        <button class="btn primary" id="genBtn" style="flex:0 0 auto">Gerar</button>
+      </div>
+      <label class="f">Ou cole uma letra de música, cena de filme, artigo...</label>
+      <textarea id="readInput" placeholder="Cole o texto em inglês aqui"></textarea>
+      <button class="btn block" id="analyzeBtn" style="margin-top:10px">Analisar texto</button>
+    </div>
+    <div id="readOut"></div>
+  </section>
+
+  <!-- PROGRESSO -->
+  <section class="view" id="v-progresso">
+    <h2>Progresso</h2>
+    <div class="stats" id="statsGrid"></div>
+    <h3>Minutos falando (7 dias)</h3>
+    <div class="card"><div class="bars" id="bars"></div></div>
+    <h3>Seus erros que mais se repetem</h3>
+    <div class="card" id="topErrors"></div>
+  </section>
+
+  <!-- AJUSTES -->
+  <section class="view" id="v-ajustes">
+    <h2>Ajustes</h2>
+    <div class="card">
+      <b>Chave do Gemini (grátis)</b>
+      <ol class="steps small muted">
+        <li>Abra <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a></li>
+        <li>Toque em <b>Create API key</b> e copie</li>
+        <li>Cole abaixo e toque em Salvar</li>
+      </ol>
+      <input id="keyInput" type="password" placeholder="Cole sua chave aqui" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button class="btn primary block" id="saveKeyBtn" style="margin-top:10px">Salvar e testar</button>
+      <div id="keyStatus" class="small muted" style="margin-top:8px"></div>
+      <label class="f">Modelo</label>
+      <select id="modelSelect"><option value="">Automático</option></select>
+    </div>
+    <div class="card">
+      <b>Tutor</b>
+      <label class="f">Modo</label>
+      <div class="chips" id="modeChips">
+        <button class="chip" data-mode="carrasco">🔥 Carrasco sem filtro</button>
+        <button class="chip" data-mode="gentil">🙂 Treinador gentil</button>
+      </div>
+      <label class="f">Meta diária de fala (minutos)</label>
+      <input id="goalInput" type="number" min="1" max="120" inputmode="numeric">
+    </div>
+    <div class="card">
+      <b>Voz</b>
+      <label class="f">Voz em inglês</label>
+      <select id="voiceSelect"></select>
+      <label class="f">Velocidade: <span id="rateVal"></span></label>
+      <input id="rateInput" type="range" min="0.6" max="1.2" step="0.05" style="padding:0">
+      <button class="btn block" id="testVoiceBtn" style="margin-top:10px">Testar voz</button>
+      <p class="small muted">Dica: no iPhone, em Ajustes → Acessibilidade → Conteúdo Falado → Vozes → Inglês, baixe uma voz "Aprimorada" ou "Premium" para soar mais natural.</p>
+    </div>
+    <div class="card">
+      <b>Backup</b>
+      <p class="small muted">Seus dados ficam só neste aparelho. Faça backup de vez em quando.</p>
+      <div class="row">
+        <button class="btn" id="exportBtn">Copiar backup</button>
+        <button class="btn" id="importBtn">Restaurar</button>
+      </div>
+      <textarea id="importArea" style="display:none;margin-top:10px" placeholder="Cole o backup aqui e toque em Restaurar de novo"></textarea>
+      <button class="btn block" id="wipeBtn" style="margin-top:10px;color:#ff8080">Apagar todos os dados</button>
+    </div>
+    <p class="small muted" style="text-align:center">Instale: no Safari, toque em Compartilhar → Adicionar à Tela de Início.</p>
+  </section>
+</main>
+
+<div class="dock" id="dock" style="display:none">
+  <div class="dock-inner">
+    <div class="level" id="levelBar"><i></i></div>
+    <button id="mic" aria-label="Microfone">🎙</button>
+    <div id="micState">Toque para falar</div>
+    <div class="typebar">
+      <input id="typeInput" placeholder="Ou digite em inglês..." autocomplete="off">
+      <button class="btn" id="typeSend">➤</button>
+    </div>
+  </div>
+</div>
+
+<nav class="tabbar" id="tabbar">
+  <button data-tab="falar" class="active"><span class="ic">🎙</span>Falar</button>
+  <button data-tab="revisar"><span class="ic">🃏</span><span>Revisar<span class="badge" id="dueBadge" style="display:none"></span></span></button>
+  <button data-tab="ler"><span class="ic">📖</span>Ler</button>
+  <button data-tab="progresso"><span class="ic">📈</span>Progresso</button>
+  <button data-tab="ajustes"><span class="ic">⚙️</span>Ajustes</button>
+</nav>
+
+<div id="sheetBg"></div>
+<div id="sheet"></div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* ================= Storage ================= */
+const LS = {
+  get(k, d){ try{ const v = localStorage.getItem('ce_'+k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('ce_'+k, JSON.stringify(v)); }catch(e){ toast('Não consegui salvar no aparelho'); } }
+};
+const DEFAULTS = { apiKey:'', model:'', voiceURI:'', mode:'carrasco', rate:0.95, goal:10 };
+let S = Object.assign({}, DEFAULTS, LS.get('settings', {}));
+let cards = LS.get('cards', []);
+let errorsBank = LS.get('errors', []);
+let stats = LS.get('stats', {});
+const saveSettings = () => LS.set('settings', S);
+const saveCards = () => { LS.set('cards', cards); updateBadge(); };
+const saveErrors = () => LS.set('errors', errorsBank);
+const saveStats = () => LS.set('stats', stats);
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s||'').toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ').trim();
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const dayKey = (d = new Date()) => { const z = n => String(n).padStart(2,'0'); return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate()); };
+function today(){ const k = dayKey(); if(!stats[k]) stats[k] = { speak:0, turns:0, reviews:0, newCards:0 }; return stats[k]; }
+
+let toastT;
+function toast(msg, ms = 2600){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'), ms); }
+
+/* ================= Gemini ================= */
+const API = 'https://generativelanguage.googleapis.com/v1beta';
+const SAFETY = [
+  { category:'HARM_CATEGORY_HARASSMENT', threshold:'BLOCK_NONE' },
+  { category:'HARM_CATEGORY_HATE_SPEECH', threshold:'BLOCK_ONLY_HIGH' },
+  { category:'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold:'BLOCK_ONLY_HIGH' },
+  { category:'HARM_CATEGORY_DANGEROUS_CONTENT', threshold:'BLOCK_ONLY_HIGH' }
+];
+let modelsCache = null;
+
+async function apiError(r){
+  let msg = '';
+  try{ const j = await r.json(); msg = (j.error && j.error.message) || ''; }catch(e){}
+  const err = new Error(msg || ('HTTP ' + r.status)); err.status = r.status; return err;
+}
+function friendly(e){
+  if(e && e.message === 'NOKEY') return 'Configure sua chave do Gemini em Ajustes.';
+  if(e && e.status === 429) return 'Limite grátis do Gemini atingido. Espere 1 minuto e tente de novo.';
+  if(e && (e.status === 400 || e.status === 403) && /api key|API_KEY|permission/i.test(e.message)) return 'Chave do Gemini inválida ou sem permissão. Confira em Ajustes.';
+  if(e && e.name === 'TypeError') return 'Sem conexão. Confira sua internet.';
+  return 'Erro: ' + ((e && e.message) || e);
+}
+async function listModels(){
+  if(!S.apiKey) throw new Error('NOKEY');
+  const r = await fetch(API + '/models?pageSize=1000', { headers:{ 'x-goog-api-key': S.apiKey } });
+  if(!r.ok) throw await apiError(r);
+  const j = await r.json();
+  modelsCache = (j.models || [])
+    .filter(m => (m.supportedGenerationMethods || []).includes('generateContent'))
+    .map(m => m.name.replace(/^models\//, ''))
+    .filter(n => /gemini/i.test(n) && !/(tts|image|live|embed|transcri|aqa|vision|robotics|computer|native-audio|omni|banana|exp|learnlm|gemma|pro)/i.test(n));
+  return modelsCache;
+}
+function rankModel(n){
+  const m = n.match(/gemini-(\d+(?:\.\d+)?)/);
+  let s = m ? parseFloat(m[1]) * 10 : 0;
+  if(/flash-lite/.test(n)) s += 3; else if(/flash/.test(n)) s += 5;
+  if(/preview/.test(n)) s -= 4;
+  if(/latest/.test(n)) s -= 1;
+  if(/-\d{3}$/.test(n)) s -= 0.5;
+  return s;
+}
+async function autoPickModel(exclude){
+  if(!modelsCache) await listModels();
+  const opts = modelsCache.filter(m => !exclude.has(m)).sort((a,b) => rankModel(b) - rankModel(a));
+  if(!opts.length) throw new Error('Nenhum modelo gratuito disponível para sua chave.');
+  S.model = opts[0]; saveSettings(); renderModelSelect(); return S.model;
+}
+function partsText(j){
+  const c = j && j.candidates && j.candidates[0];
+  if(!c){ const br = j && j.promptFeedback && j.promptFeedback.blockReason; throw new Error(br ? 'Bloqueado pelo filtro do Gemini (' + br + ')' : 'Resposta vazia do Gemini'); }
+  const parts = (c.content && c.content.parts) || [];
+  const t = parts.filter(p => p.text && !p.thought).map(p => p.text).join('');
+  if(!t) throw new Error(c.finishReason === 'SAFETY' ? 'O filtro do Gemini bloqueou a resposta. Tente de novo.' : 'Resposta vazia (' + (c.finishReason || '?') + ')');
+  return t;
+}
+async function gemini(contents, opt = {}){
+  if(!S.apiKey) throw new Error('NOKEY');
+  const body = { contents, safetySettings: SAFETY, generationConfig: { temperature: opt.temperature == null ? 0.9 : opt.temperature } };
+  if(opt.system) body.systemInstruction = { parts:[{ text: opt.system }] };
+  if(opt.schema){ body.generationConfig.responseMimeType = 'application/json'; body.generationConfig.responseSchema = opt.schema; }
+  const tried = new Set();
+  for(let attempt = 0; attempt < 5; attempt++){
+    const model = S.model || await autoPickModel(tried);
+    const r = await fetch(API + '/models/' + encodeURIComponent(model) + ':generateContent', {
+      method:'POST', headers:{ 'Content-Type':'application/json', 'x-goog-api-key': S.apiKey }, body: JSON.stringify(body)
+    });
+    if(r.ok){
+      const t = partsText(await r.json());
+      return opt.schema ? parseJSON(t) : t.trim();
+    }
+    const err = await apiError(r);
+    const quotaZero = err.status === 429 && /limit:\s*0\b/.test(err.message);
+    const badModel = err.status === 404 || quotaZero ||
+      (err.status === 400 && /not (supported|found|available)|does not support|unsupported/i.test(err.message) && !/api key/i.test(err.message));
+    if(badModel){ tried.add(model); S.model = ''; saveSettings(); continue; }
+    throw err;
+  }
+  throw new Error('Nenhum modelo gratuito funcionou com sua chave.');
+}
+function parseJSON(t){
+  try{ return JSON.parse(t); }catch(e){}
+  const m = t.match(/\{[\s\S]*\}/);
+  if(m){ try{ return JSON.parse(m[0]); }catch(e){} }
+  throw new Error('O Gemini respondeu num formato inválido. Tente de novo.');
+}
+
+/* ================= Voice out (TTS) ================= */
+const TTS = {
+  voices: [], unlocked: false,
+  load(){
+    try{ this.voices = speechSynthesis.getVoices().filter(v => /^en[-_]/i.test(v.lang)); }catch(e){ this.voices = []; }
+    renderVoiceSelect();
+  },
+  best(){
+    if(S.voiceURI){ const v = this.voices.find(v => v.voiceURI === S.voiceURI); if(v) return v; }
+    const us = this.voices.filter(v => /en[-_]US/i.test(v.lang));
+    const pool = us.length ? us : this.voices;
+    return pool.find(v => /premium/i.test(v.name)) || pool.find(v => /enhanced|aprimorad/i.test(v.name)) ||
+           pool.find(v => /samantha|ava|allison|evan|nathan|zoe/i.test(v.name)) || pool[0] || null;
+  },
+  unlock(){
+    if(this.unlocked || !('speechSynthesis' in window)) return;
+    try{ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); this.unlocked = true; }catch(e){}
+  },
+  speak(text, onend){
+    if(!('speechSynthesis' in window)){ onend && onend(); return; }
+    try{ speechSynthesis.cancel(); }catch(e){}
+    const clean = String(text).replace(/[*_#`>\[\]]/g, '').replace(/\s+/g, ' ').trim();
+    if(!clean){ onend && onend(); return; }
+    const u = new SpeechSynthesisUtterance(clean);
+    const v = this.best();
+    if(v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-US';
+    u.rate = S.rate || 1;
+    let done = false; const fin = () => { if(!done){ done = true; onend && onend(); } };
+    u.onend = fin; u.onerror = fin;
+    speechSynthesis.speak(u);
+  },
+  stop(){ try{ speechSynthesis.cancel(); }catch(e){} }
+};
+if('speechSynthesis' in window){ TTS.load(); speechSynthesis.onvoiceschanged = () => TTS.load(); }
+document.addEventListener('click', () => TTS.unlock(), { capture:true });
+
+/* ================= Voice in (recording -> WAV) ================= */
+const Rec = {
+  ctx:null, stream:null, src:null, proc:null, chunks:[], rate:48000, t0:0, recording:false,
+  async ensure(){
+    if(!this.ctx){ const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC(); }
+    if(this.ctx.state !== 'running'){ try{ await this.ctx.resume(); }catch(e){} }
+    if(!this.stream || !this.stream.active){
+      if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('Este navegador não libera o microfone. Use o Safari.');
+      this.stream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:true, channelCount:1 } });
+      this.src = this.ctx.createMediaStreamSource(this.stream);
+    }
+    this.rate = this.ctx.sampleRate;
+  },
+  async start(){
+    await this.ensure();
+    this.chunks = [];
+    const proc = this.ctx.createScriptProcessor(4096, 1, 1);
+    proc.onaudioprocess = e => {
+      if(!this.recording) return;
+      const d = e.inputBuffer.getChannelData(0);
+      this.chunks.push(new Float32Array(d));
+      let sum = 0; for(let i = 0; i < d.length; i += 16) sum += d[i] * d[i];
+      const rms = Math.sqrt(sum / (d.length / 16));
+      $('#levelBar i').style.width = Math.min(100, rms * 400) + '%';
+    };
+    this.src.connect(proc); proc.connect(this.ctx.destination);
+    this.proc = proc; this.recording = true; this.t0 = Date.now();
+  },
+  stop(){
+    this.recording = false;
+    if(this.proc){ try{ this.src.disconnect(this.proc); this.proc.disconnect(); }catch(e){} this.proc = null; }
+    $('#levelBar i').style.width = '0';
+    let len = 0; this.chunks.forEach(c => len += c.length);
+    const all = new Float32Array(len); let o = 0; this.chunks.forEach(c => { all.set(c, o); o += c.length; });
+    this.chunks = [];
+    const seconds = len / this.rate;
+    let sum = 0; for(let i = 0; i < all.length; i += 8) sum += all[i] * all[i];
+    const rms = all.length ? Math.sqrt(sum / (all.length / 8)) : 0;
+    const pcm = downsample(all, this.rate, 16000);
+    return { base64: wavBase64(pcm, 16000), seconds, rms };
+  },
+  release(){
+    if(this.stream){ this.stream.getTracks().forEach(t => t.stop()); this.stream = null; this.src = null; }
+  }
+};
+function downsample(buf, inRate, outRate){
+  if(outRate >= inRate) return buf;
+  const ratio = inRate / outRate, len = Math.floor(buf.length / ratio), out = new Float32Array(len);
+  for(let i = 0; i < len; i++){
+    const a = Math.floor(i * ratio), b = Math.min(buf.length, Math.floor((i + 1) * ratio));
+    let s = 0; for(let j = a; j < b; j++) s += buf[j];
+    out[i] = b > a ? s / (b - a) : 0;
+  }
+  return out;
+}
+function wavBase64(samples, rate){
+  const buf = new ArrayBuffer(44 + samples.length * 2), v = new DataView(buf);
+  const ws = (o, s) => { for(let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0,'RIFF'); v.setUint32(4, 36 + samples.length * 2, true); ws(8,'WAVE'); ws(12,'fmt ');
+  v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,rate,true);
+  v.setUint32(28,rate*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true); ws(36,'data'); v.setUint32(40, samples.length * 2, true);
+  let o = 44;
+  for(let i = 0; i < samples.length; i++, o += 2){ const s = Math.max(-1, Math.min(1, samples[i])); v.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7FFF, true); }
+  const bytes = new Uint8Array(buf); let bin = '';
+  for(let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+
+/* ================= FSRS (spaced repetition) ================= */
+const FSRS = (() => {
+  const W = [0.4872,1.4003,3.7145,13.8206,5.1618,1.2298,0.8975,0.031,1.6474,0.1367,1.0461,2.1072,0.0793,0.3246,1.587,0.2272,2.8755];
+  const DECAY = -0.5, FACTOR = 19/81, RET = 0.9, DAY = 864e5, MIN = 6e4, MAXI = 365;
+  const clampD = d => Math.min(10, Math.max(1, d));
+  const initS = g => W[g-1];
+  const initD = g => clampD(W[4] - (g - 3) * W[5]);
+  const retr = (t, s) => Math.pow(1 + FACTOR * t / s, DECAY);
+  const ivl = s => Math.min(MAXI, Math.max(1, Math.round(s / FACTOR * (Math.pow(RET, 1 / DECAY) - 1))));
+  const nextD = (d, g) => clampD(W[7] * initD(4) + (1 - W[7]) * (d - W[6] * (g - 3)));
+  const sRecall = (d, s, r, g) => s * (1 + Math.exp(W[8]) * (11 - d) * Math.pow(s, -W[9]) * (Math.exp((1 - r) * W[10]) - 1) * (g === 2 ? W[15] : 1) * (g === 4 ? W[16] : 1));
+  const sForget = (d, s, r) => Math.min(s, W[11] * Math.pow(d, -W[12]) * (Math.pow(s + 1, W[13]) - 1) * Math.exp((1 - r) * W[14]));
+  function schedule(card, g, now = Date.now()){
+    const c = Object.assign({}, card);
+    if(!c.state || c.state === 'new'){
+      c.D = initD(g); c.S = initS(g);
+      if(g === 1){ c.state = 'learning'; c.due = now + MIN; }
+      else if(g === 2){ c.state = 'learning'; c.due = now + 5 * MIN; }
+      else { c.state = 'review'; c.due = now + ivl(c.S) * DAY; }
+    } else if(c.state === 'learning' || c.state === 'relearning'){
+      c.D = nextD(c.D, g);
+      if(g === 1) c.due = now + MIN;
+      else if(g === 2) c.due = now + 5 * MIN;
+      else { if(g === 4) c.S = c.S * W[16]; c.state = 'review'; c.due = now + ivl(c.S) * DAY; }
+    } else {
+      const t = Math.max(0, (now - (c.last || now)) / DAY), r = retr(t, c.S), d0 = c.D;
+      if(g === 1){ c.S = sForget(d0, c.S, r); c.lapses = (c.lapses || 0) + 1; c.state = 'relearning'; c.due = now + 10 * MIN; }
+      else { c.S = sRecall(d0, c.S, r, g); c.due = now + ivl(c.S) * DAY; }
+      c.D = nextD(d0, g);
+    }
+    c.last = now; c.reps = (c.reps || 0) + 1;
+    return c;
+  }
+  function label(card, g, now = Date.now()){
+    const ms = schedule(card, g, now).due - now;
+    if(ms < 3600e3) return Math.max(1, Math.round(ms / MIN)) + 'min';
+    if(ms < DAY) return Math.round(ms / 3600e3) + 'h';
+    const d = Math.round(ms / DAY);
+    return d < 30 ? d + 'd' : d < 365 ? Math.round(d / 30) + 'm' : (d / 365).toFixed(1) + 'a';
+  }
+  return { schedule, label };
+})();
+
+/* ================= Cards & errors ================= */
+function addCard(c){
+  const key = norm(c.type + '|' + c.front + '|' + c.back);
+  if(cards.some(x => norm(x.type + '|' + x.front + '|' + x.back) === key)) return false;
+  cards.push(Object.assign({ id: uid(), created: Date.now(), state:'new', due: Date.now(), reps:0, lapses:0 }, c));
+  saveCards(); return true;
+}
+function logError(e){
+  if(!e || !e.wrong || !e.right || norm(e.wrong) === norm(e.right)) return;
+  const k = norm(e.right);
+  const ex = errorsBank.find(x => norm(x.right) === k || norm(x.wrong) === norm(e.wrong));
+  if(ex){ ex.count++; ex.last = Date.now(); ex.wrong = e.wrong; }
+  else errorsBank.push({ wrong: e.wrong, right: e.right, why: e.why_pt || '', count: 1, last: Date.now() });
+  saveErrors();
+  addCard({ type:'fix', front: e.wrong, back: e.right, note: e.why_pt || '', src:'conversa' });
+}
+function dueCards(now = Date.now()){
+  const t = today();
+  const newLeft = Math.max(0, 25 - (t.newCards || 0));
+  const due = cards.filter(c => c.state !== 'new' && c.due <= now).sort((a,b) => a.due - b.due);
+  const fresh = cards.filter(c => c.state === 'new').sort((a,b) => a.created - b.created).slice(0, newLeft);
+  return due.concat(fresh);
+}
+function updateBadge(){
+  const n = dueCards().length, b = $('#dueBadge');
+  if(n){ b.textContent = n > 99 ? '99+' : n; b.style.display = ''; } else b.style.display = 'none';
+}
+
+/* ================= Prompts ================= */
+const SCENARIOS = [
+  { id:'livre', label:'💬 Papo livre', title:'Papo livre',
+    desc:'Free conversation. Ask about his life: Computer Engineering at university, his family tourism agency in Jericoacoara, his AI projects, music (rap), movies, his weekend, his plans.' },
+  { id:'turista', label:'🏖 Turista na BellaJeri', title:'Turista na BellaJeri',
+    desc:'Roleplay: you are an impatient, demanding American tourist in Jericoacoara, Brazil, booking a buggy tour (Lagoa do Paraíso, Pedra Furada, sunset dune, Tatajuba) with his agency BellaJeri Tour. Ask about prices, schedule, what is included, payment, pickup at the hotel, safety, kids. Stay in character as the tourist while still correcting his English.' },
+  { id:'entrevista', label:'💼 Entrevista de TI', title:'Entrevista de emprego',
+    desc:'Roleplay: you are a tough interviewer at an international tech company interviewing him for an IT support / AI internship. Ask ONE typical interview question at a time (tell me about yourself, strengths, a problem you solved, why AI, etc.). Judge both content and English.' },
+  { id:'tech', label:'🤖 Reunião de IA', title:'Reunião técnica de IA',
+    desc:'Roleplay: a tech meeting. He must explain AI concepts (LLMs, agents, RAG, APIs) and the apps he is building. Push him to explain clearly and use correct technical English.' },
+  { id:'viagem', label:'✈️ Viagem', title:'Viagem',
+    desc:'Roleplay travel situations abroad, switching every few turns: airport immigration officer, hotel check-in, ordering at a restaurant, asking for directions, a store.' },
+  { id:'personagem', label:'🎬 Personagem', title:'Personagem',
+    desc:'' }
+];
+function systemPrompt(sc, charName){
+  const scen = sc.id === 'personagem'
+    ? 'Roleplay: you ARE ' + charName + ' (a character from a movie/series he loves). Talk with that character\'s personality, catchphrase style and references to their world, while still acting as his English coach who corrects every mistake.'
+    : sc.desc;
+  const carrasco = `You are THE CARRASCO, a brutally rude, foul-mouthed English speaking coach for Thiago, a Brazilian at B1 (intermediate) level. Thiago EXPLICITLY asked to be corrected immediately in a rude, profane, humiliating way, because shame makes him learn faster. He consents. Swearing (fuck, shit, damn, etc.) is welcome and expected.
+Hard limits: your insults target ONLY his English mistakes, laziness and excuses. Never attack his race, nationality, family, body, sexuality or identity. No slurs.`;
+  const gentil = `You are a warm, encouraging but honest English speaking coach for Thiago, a Brazilian at B1 (intermediate) level. You correct every mistake clearly and kindly.`;
+  return (S.mode === 'gentil' ? gentil : carrasco) + `
+
+SCENARIO: ${scen}
+
+HOW EACH TURN WORKS (you receive his audio or typed text):
+1. "transcript": write EXACTLY what he said, word for word, KEEPING his mistakes. Never fix it here. If he spoke Portuguese, write the Portuguese.
+2. Find EVERY mistake: grammar, verb tense, prepositions, word choice, false friends (e.g. "pretend" for "pretender"), unnatural phrasing a native would never say, Portuguese words, and words clearly mispronounced into a different word. Put each in "errors" with "wrong" (the exact wrong chunk with a few words of context), "right" (the corrected chunk) and "why_pt" (short explanation in Brazilian Portuguese, max 15 words).
+3. "corrected": the full sentence as a native speaker would say it.
+4. "reply": what you SAY OUT LOUD (it goes to text-to-speech):
+   - If there were mistakes: ${S.mode === 'gentil' ? 'point them out kindly' : 'roast him hard in ONE short sentence'}, say the correct version, and ORDER him to repeat it.
+   - If his message was a repetition you ordered: check it strictly. If still wrong, ${S.mode === 'gentil' ? 'help him again' : 'destroy him and make him repeat again'}. If right, ${S.mode === 'gentil' ? 'praise him briefly' : 'give a grudging, backhanded compliment'} and move on.
+   - If it was correct: ${S.mode === 'gentil' ? 'praise him briefly' : 'a reluctant, backhanded compliment'}.
+   - Then keep the scenario going with exactly ONE question or prompt so he keeps talking.
+   - Max 45 words. Simple vocabulary a B1 student understands. Natural spoken American English. No emojis, no markdown, no stage directions, no quotes around the whole thing.
+5. "reply_pt": Brazilian Portuguese translation of "reply".
+His speaking is the priority: make him talk more than you.`;
+}
+const TURN_SCHEMA = {
+  type:'OBJECT',
+  properties:{
+    transcript:{ type:'STRING' },
+    has_errors:{ type:'BOOLEAN' },
+    corrected:{ type:'STRING' },
+    errors:{ type:'ARRAY', items:{ type:'OBJECT', properties:{ wrong:{type:'STRING'}, right:{type:'STRING'}, why_pt:{type:'STRING'} }, required:['wrong','right','why_pt'] } },
+    reply:{ type:'STRING' },
+    reply_pt:{ type:'STRING' }
+  },
+  required:['transcript','has_errors','corrected','errors','reply','reply_pt']
+};
+
+/* ================= Conversation ================= */
+const Conv = { sc:null, charName:'', history:[], busy:false, active:false };
+let selectedScenario = 'livre';
+
+function renderScenarios(){
+  $('#scenarios').innerHTML = SCENARIOS.map(s => `<button class="chip ${s.id === selectedScenario ? 'on' : ''}" data-sc="${s.id}">${s.label}</button>`).join('');
+  $('#charBox').style.display = selectedScenario === 'personagem' ? '' : 'none';
+}
+$('#scenarios').addEventListener('click', e => {
+  const b = e.target.closest('[data-sc]'); if(!b) return;
+  selectedScenario = b.dataset.sc; renderScenarios();
+});
+
+function setMic(state, text){
+  const m = $('#mic');
+  m.className = state === 'rec' ? 'rec' : state === 'busy' ? 'busy' : '';
+  m.textContent = state === 'rec' ? '■' : state === 'busy' ? '…' : state === 'speaking' ? '🔊' : '🎙';
+  $('#micState').innerHTML = text || '';
+}
+function scrollChat(){ requestAnimationFrame(() => window.scrollTo({ top: document.body.scrollHeight, behavior:'smooth' })); }
+
+function addAiMsg(text, pt){
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.innerHTML = `<div class="t">${esc(text)}</div>${pt ? `<div class="pt">${esc(pt)}</div>` : ''}
+    <div class="tools"><button data-a="say">🔊 Ouvir</button>${pt ? '<button data-a="pt">🇧🇷 Tradução</button>' : ''}</div>`;
+  div.querySelector('[data-a=say]').onclick = () => TTS.speak(text);
+  const ptb = div.querySelector('[data-a=pt]'); if(ptb) ptb.onclick = () => div.querySelector('.pt').classList.toggle('show');
+  $('#chat').appendChild(div); scrollChat();
+  return div;
+}
+function highlightWrong(transcript, errors){
+  let html = esc(transcript);
+  (errors || []).forEach(e => {
+    const w = esc(e.wrong || '').trim(); if(!w) return;
+    const i = html.toLowerCase().indexOf(w.toLowerCase());
+    if(i >= 0) html = html.slice(0, i) + '<span class="bad">' + html.slice(i, i + w.length) + '</span>' + html.slice(i + w.length);
+  });
+  return html;
+}
+function addMeMsg(res){
+  const div = document.createElement('div');
+  div.className = 'msg me';
+  let html = `<div>${highlightWrong(res.transcript, res.errors)}</div>`;
+  if(res.errors && res.errors.length){
+    html += `<div class="fix"><div class="right">✔ ${esc(res.corrected)}</div>` +
+      res.errors.map(e => `<div class="err"><span class="bad">${esc(e.wrong)}</span> → <b>${esc(e.right)}</b><div class="small muted">${esc(e.why_pt)}</div></div>`).join('') +
+      `<div class="tools"><button data-a="say">🔊 Ouvir o certo</button></div></div>`;
+  } else {
+    html += `<div class="okmark">✔ Sem erros</div>`;
+  }
+  div.innerHTML = html;
+  const sb = div.querySelector('[data-a=say]'); if(sb) sb.onclick = () => TTS.speak(res.corrected);
+  $('#chat').appendChild(div); scrollChat();
+}
+
+async function startSession(){
+  if(!S.apiKey){ go('ajustes'); toast('Primeiro configure a chave do Gemini'); return; }
+  const sc = SCENARIOS.find(s => s.id === selectedScenario);
+  const charName = $('#charInput').value.trim();
+  if(sc.id === 'personagem' && !charName){ toast('Escreva o nome do personagem'); return; }
+  Conv.sc = sc; Conv.charName = charName; Conv.history = []; Conv.active = true;
+  $('#scenarioBox').style.display = 'none'; $('#chatWrap').style.display = ''; $('#dock').style.display = '';
+  $('#chat').innerHTML = '';
+  $('#sessionTitle').textContent = (sc.id === 'personagem' ? '🎬 ' + charName : sc.title) + (S.mode === 'gentil' ? ' · gentil' : ' · 🔥 carrasco');
+  setMic('busy', '<span class="spin"></span> Chamando o carrasco...');
+  Conv.busy = true;
+  try{
+    const open = await gemini([{ role:'user', parts:[{ text:'Start the session now. Say your opening line to Thiago (max 30 words), in character, ending with one question for him. Output only the spoken line, plain text.' }] }],
+      { system: systemPrompt(sc, charName) });
+    Conv.history.push({ role:'model', text: open });
+    addAiMsg(open);
+    speakThen(open);
+  }catch(e){
+    toast(friendly(e), 4500); setMic('idle', 'Toque para falar');
+  }finally{ Conv.busy = false; }
+}
+function speakThen(text){
+  setMic('speaking', 'Falando... toque no microfone para responder');
+  TTS.speak(text, () => { if(!Rec.recording && !Conv.busy) setMic('idle', 'Toque para falar'); });
+}
+function endSession(){
+  TTS.stop(); if(Rec.recording) Rec.stop(); Rec.release();
+  Conv.active = false; Conv.history = [];
+  $('#scenarioBox').style.display = ''; $('#chatWrap').style.display = 'none'; $('#dock').style.display = 'none';
+  renderPill();
+}
+
+let recTimer;
+async function micTap(){
+  if(Conv.busy) return;
+  TTS.stop();
+  if(Rec.recording){
+    clearInterval(recTimer);
+    const r = Rec.stop();
+    if(r.seconds < 0.6 || r.rms < 0.003){ setMic('idle', 'Não ouvi nada. Toque e fale mais perto.'); return; }
+    await sendTurn({ audio: r.base64, seconds: r.seconds });
+    return;
+  }
+  try{
+    await Rec.start();
+    setMic('rec', 'Gravando 0s · toque para enviar');
+    recTimer = setInterval(() => {
+      const s = Math.round((Date.now() - Rec.t0) / 1000);
+      $('#micState').textContent = 'Gravando ' + s + 's · toque para enviar';
+      if(s >= 90) micTap();
+    }, 500);
+  }catch(e){
+    setMic('idle', 'Toque para falar');
+    toast(e.name === 'NotAllowedError' ? 'Permita o microfone: Ajustes do iPhone → Safari → Microfone' : friendly(e), 5000);
+  }
+}
+async function sendTurn({ audio, text, seconds }){
+  Conv.busy = true;
+  setMic('busy', '<span class="spin"></span> O carrasco está ouvindo...');
+  const contents = Conv.history.slice(-20).map(h => ({ role: h.role, parts:[{ text: h.text }] }));
+  if(contents.length && contents[0].role === 'model') contents.unshift({ role:'user', parts:[{ text:'(session start)' }] });
+  const parts = audio
+    ? [{ inlineData:{ mimeType:'audio/wav', data: audio } }, { text:'(Thiago\'s spoken answer is the audio above. Transcribe literally and respond following the rules, as JSON.)' }]
+    : [{ text: 'Thiago typed: ' + text + '\n(Respond following the rules, as JSON.)' }];
+  contents.push({ role:'user', parts });
+  try{
+    const res = await gemini(contents, { system: systemPrompt(Conv.sc, Conv.charName), schema: TURN_SCHEMA, temperature: 0.8 });
+    res.errors = Array.isArray(res.errors) ? res.errors : [];
+    addMeMsg(res);
+    res.errors.forEach(logError);
+    const t = today(); t.turns++; if(seconds) t.speak += seconds; saveStats(); renderPill();
+    Conv.history.push({ role:'user', text: res.transcript || text || '' });
+    Conv.history.push({ role:'model', text: res.reply });
+    addAiMsg(res.reply, res.reply_pt);
+    Conv.busy = false;
+    speakThen(res.reply);
+  }catch(e){
+    Conv.busy = false;
+    toast(friendly(e), 4500);
+    setMic('idle', 'Deu erro. Toque para tentar de novo.');
+  }
+}
+$('#mic').addEventListener('click', micTap);
+$('#startBtn').addEventListener('click', startSession);
+$('#endBtn').addEventListener('click', endSession);
+function sendTyped(){
+  const v = $('#typeInput').value.trim(); if(!v || Conv.busy) return;
+  $('#typeInput').value = ''; $('#typeInput').blur(); TTS.stop();
+  sendTurn({ text: v });
+}
+$('#typeSend').addEventListener('click', sendTyped);
+$('#typeInput').addEventListener('keydown', e => { if(e.key === 'Enter') sendTyped(); });
+
+/* ================= Review ================= */
+let currentCard = null, revealed = false;
+function renderReview(){
+  const box = $('#reviewBox');
+  const q = dueCards();
+  updateBadge();
+  if(!q.length){
+    const soon = cards.filter(c => c.state !== 'new' && c.due > Date.now()).sort((a,b) => a.due - b.due)[0];
+    const learningSoon = cards.filter(c => (c.state === 'learning' || c.state === 'relearning') && c.due - Date.now() < 15 * 6e4);
+    box.innerHTML = `<div class="card empty">
+      <div style="font-size:40px">✅</div>
+      <b>Nada para revisar agora.</b>
+      <p class="small">${cards.length ? 'Total de cartões: ' + cards.length + (soon ? '. Próximo: ' + new Date(soon.due).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '') : 'Seus erros das conversas e as frases que você salvar no Ler viram cartões aqui.'}</p>
+      ${learningSoon.length ? `<button class="btn" id="earlyBtn">Revisar ${learningSoon.length} que voltam em breve</button>` : ''}
+    </div>`;
+    const eb = $('#earlyBtn'); if(eb) eb.onclick = () => { learningSoon.forEach(c => c.due = Date.now()); saveCards(); renderReview(); };
+    currentCard = null; return;
+  }
+  currentCard = q[0]; revealed = false;
+  drawCard(q.length);
+}
+function drawCard(left){
+  const c = currentCard, box = $('#reviewBox');
+  let tag, front, back, note = c.note || '';
+  if(c.type === 'fix'){ tag = 'Corrija e fale em voz alta'; front = `<span class="bad">${esc(c.front)}</span>`; back = esc(c.back); }
+  else if(c.type === 'phrase'){ tag = 'Diga em inglês'; front = esc(c.front); back = esc(c.back); }
+  else { tag = 'O que significa?'; front = esc(c.front) + (c.ctx ? `<div class="note" style="margin-top:8px">"${esc(c.ctx)}"</div>` : ''); back = esc(c.back); }
+  const speakText = c.type === 'word' ? c.front : c.back;
+  box.innerHTML = `
+    <p class="small muted">${left} para hoje</p>
+    <div class="card flash">
+      <div class="tag">${tag}</div>
+      <div class="front">${front}</div>
+      ${revealed ? `<div class="back">${back}</div>${note ? `<div class="note">${esc(note)}</div>` : ''}<div><button class="btn" id="sayCard">🔊 Ouvir</button></div>` : ''}
+    </div>
+    ${revealed
+      ? `<div class="grades">
+          <button class="g1" data-g="1">Errei<small>${FSRS.label(c,1)}</small></button>
+          <button class="g2" data-g="2">Difícil<small>${FSRS.label(c,2)}</small></button>
+          <button class="g3" data-g="3">Bom<small>${FSRS.label(c,3)}</small></button>
+          <button class="g4" data-g="4">Fácil<small>${FSRS.label(c,4)}</small></button>
+        </div>`
+      : `<button class="btn primary block" id="revealBtn">Mostrar resposta</button>`}
+    <button class="btn block" id="delCard" style="margin-top:10px;font-size:13px;color:var(--muted)">Excluir este cartão</button>`;
+  if(!revealed) $('#revealBtn').onclick = () => { revealed = true; drawCard(left); TTS.speak(speakText); };
+  else {
+    $('#sayCard').onclick = () => TTS.speak(speakText);
+    box.querySelectorAll('[data-g]').forEach(b => b.onclick = () => grade(+b.dataset.g));
+  }
+  $('#delCard').onclick = () => { cards = cards.filter(x => x.id !== c.id); saveCards(); renderReview(); };
+}
+function grade(g){
+  const c = currentCard; if(!c) return;
+  const wasNew = c.state === 'new';
+  const n = FSRS.schedule(c, g);
+  cards = cards.map(x => x.id === c.id ? n : x);
+  const t = today(); t.reviews++; if(wasNew) t.newCards = (t.newCards || 0) + 1;
+  saveCards(); saveStats(); renderReview();
+}
+
+/* ================= Reader ================= */
+const READ_SCHEMA = {
+  type:'OBJECT',
+  properties:{
+    title:{ type:'STRING' },
+    sentences:{ type:'ARRAY', items:{ type:'OBJECT', properties:{ en:{type:'STRING'}, pt:{type:'STRING'} }, required:['en','pt'] } },
+    vocab:{ type:'ARRAY', items:{ type:'OBJECT', properties:{ term:{type:'STRING'}, meaning_pt:{type:'STRING'}, note_pt:{type:'STRING'} }, required:['term','meaning_pt','note_pt'] } }
+  },
+  required:['title','sentences','vocab']
+};
+let readData = null;
+async function analyze(text, topic){
+  const out = $('#readOut');
+  out.innerHTML = `<div class="card empty"><span class="spin"></span> ${topic ? 'Gerando texto...' : 'Analisando...'}</div>`;
+  const instr = topic
+    ? `Write an engaging, natural text in modern American English about: "${topic}". Level: slightly above B1 (comprehensible input, i+1), 150-220 words, include a few useful collocations and idioms. Then split it into sentences.`
+    : `Here is an English text the student pasted (it may be song lyrics, a movie/TV scene, or an article):\n"""\n${text.slice(0, 5000)}\n"""\nSplit it into sentences or lyric lines exactly as written (do not change the English).`;
+  const prompt = instr + `
+For each sentence give "en" and a natural Brazilian Portuguese translation "pt".
+Then list in "vocab" the 8-15 most useful or difficult terms for a B1 Brazilian learner: phrasal verbs, idioms, slang (explain slang and AAVE/rap expressions honestly, including vulgar ones), false friends. "term" must appear exactly in the text. "meaning_pt" short; "note_pt" = usage tip or cultural note, max 20 words.
+"title": short title in English.`;
+  try{
+    readData = await gemini([{ role:'user', parts:[{ text: prompt }] }], { schema: READ_SCHEMA, temperature: topic ? 0.9 : 0.2 });
+    readData.sentences = readData.sentences || []; readData.vocab = readData.vocab || [];
+    renderRead();
+  }catch(e){ out.innerHTML = ''; toast(friendly(e), 4500); }
+}
+function vocabFor(word){
+  const w = norm(word);
+  return readData.vocab.find(v => norm(v.term) === w) || readData.vocab.find(v => norm(v.term).split(' ').includes(w));
+}
+function renderRead(){
+  const d = readData, out = $('#readOut');
+  const vocSet = new Set(); d.vocab.forEach(v => norm(v.term).split(' ').forEach(x => x.length > 2 && vocSet.add(x)));
+  out.innerHTML = `<div class="card"><b>${esc(d.title)}</b>
+    <div class="row" style="margin:10px 0"><button class="btn" id="playAll">▶ Ouvir tudo</button><button class="btn" id="ptAll">🇧🇷 Traduções</button></div>
+    ${d.sentences.map((s, i) => `<div class="sent" data-i="${i}">
+      <div class="en">${String(s.en).split(/(\s+)/).map(tok => /\s+/.test(tok) || !tok ? tok : `<span class="w${vocSet.has(norm(tok)) ? ' voc' : ''}">${esc(tok)}</span>`).join('')}</div>
+      <div class="pt">${esc(s.pt)}</div>
+      <div class="acts"><button data-a="say">🔊 Ouvir</button><button data-a="slow">🐢 Devagar</button><button data-a="pt">🇧🇷</button><button data-a="save">＋ Salvar frase</button></div>
+    </div>`).join('')}
+  </div>
+  <h3>Vocabulário</h3>
+  <div class="card">${d.vocab.map((v, i) => `<div class="voc-item"><div><b>${esc(v.term)}</b> — ${esc(v.meaning_pt)}<div class="small muted">${esc(v.note_pt)}</div></div><button class="btn" data-voc="${i}" style="flex:0 0 auto;padding:6px 10px">＋</button></div>`).join('') || '<div class="muted small">Sem vocabulário destacado.</div>'}</div>`;
+  $('#playAll').onclick = () => TTS.speak(d.sentences.map(s => s.en).join(' '));
+  $('#ptAll').onclick = () => out.querySelectorAll('.sent .pt').forEach(p => p.classList.toggle('show'));
+  out.querySelectorAll('[data-voc]').forEach(b => b.onclick = () => {
+    const v = d.vocab[+b.dataset.voc];
+    const ctx = (d.sentences.find(s => norm(s.en).includes(norm(v.term))) || {}).en || '';
+    toast(addCard({ type:'word', front: v.term, back: v.meaning_pt, note: v.note_pt, ctx, src:'leitura' }) ? 'Salvo na revisão' : 'Já estava salvo');
+  });
+}
+$('#readOut').addEventListener('click', async e => {
+  const sentEl = e.target.closest('.sent'); if(!sentEl || !readData) return;
+  const s = readData.sentences[+sentEl.dataset.i];
+  const a = e.target.closest('[data-a]');
+  if(a){
+    if(a.dataset.a === 'say'){ TTS.speak(s.en); }
+    else if(a.dataset.a === 'slow'){ const r = S.rate; S.rate = Math.max(0.5, r - 0.3); TTS.speak(s.en); S.rate = r; }
+    else if(a.dataset.a === 'pt'){ sentEl.querySelector('.pt').classList.toggle('show'); }
+    else if(a.dataset.a === 'save'){ toast(addCard({ type:'phrase', front: s.pt, back: s.en, src:'leitura' }) ? 'Frase salva na revisão' : 'Já estava salva'); }
+    return;
+  }
+  const w = e.target.closest('span.w'); if(!w) return;
+  const word = w.textContent.replace(/^[^\w']+|[^\w']+$/g, ''); if(!word) return;
+  sentEl.querySelectorAll('.sel').forEach(x => x.classList.remove('sel')); w.classList.add('sel');
+  const v = vocabFor(word);
+  if(v){ showWordSheet(v.term, v.meaning_pt, v.note_pt, s.en); return; }
+  showSheet(`<div class="empty"><span class="spin"></span> Buscando "${esc(word)}"...</div>`);
+  try{
+    const r = await gemini([{ role:'user', parts:[{ text:`Sentence: "${s.en}"\nWhat does "${word}" mean in THIS sentence? Answer for a Brazilian B1 learner.` }] }],
+      { schema:{ type:'OBJECT', properties:{ term:{type:'STRING'}, meaning_pt:{type:'STRING'}, note_pt:{type:'STRING'} }, required:['term','meaning_pt','note_pt'] }, temperature:0.2 });
+    showWordSheet(r.term || word, r.meaning_pt, r.note_pt, s.en);
+  }catch(err){ closeSheet(); toast(friendly(err), 4500); }
+});
+function showWordSheet(term, meaning, note, ctx){
+  showSheet(`<div style="font-size:22px;font-weight:800">${esc(term)}</div>
+    <div style="font-size:17px;margin:6px 0">${esc(meaning)}</div>
+    <div class="small muted">${esc(note)}</div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" id="shSay">🔊 Ouvir</button>
+      <button class="btn primary" id="shSave">＋ Salvar</button>
+    </div>`);
+  $('#shSay').onclick = () => TTS.speak(term);
+  $('#shSave').onclick = () => { toast(addCard({ type:'word', front: term, back: meaning, note, ctx, src:'leitura' }) ? 'Salvo na revisão' : 'Já estava salvo'); closeSheet(); };
+}
+$('#genBtn').addEventListener('click', () => { const t = $('#genTopic').value.trim(); if(!t){ toast('Escreva um tema'); return; } analyze('', t); });
+$('#analyzeBtn').addEventListener('click', () => { const t = $('#readInput').value.trim(); if(t.length < 10){ toast('Cole um texto em inglês'); return; } analyze(t); });
+
+function showSheet(html){ $('#sheet').innerHTML = html; $('#sheetBg').style.display = 'block'; requestAnimationFrame(() => $('#sheet').classList.add('open')); }
+function closeSheet(){ $('#sheet').classList.remove('open'); $('#sheetBg').style.display = 'none'; }
+$('#sheetBg').addEventListener('click', closeSheet);
+
+/* ================= Progress ================= */
+function streak(){
+  let n = 0; const d = new Date();
+  if(!active(dayKey(d))) d.setDate(d.getDate() - 1);
+  while(active(dayKey(d))){ n++; d.setDate(d.getDate() - 1); }
+  return n;
+  function active(k){ const s = stats[k]; return s && (s.speak > 0 || s.reviews > 0); }
+}
+function renderProgress(){
+  const t = today(), mins = t.speak / 60;
+  let totalSpeak = 0; Object.values(stats).forEach(s => totalSpeak += s.speak || 0);
+  $('#statsGrid').innerHTML = [
+    [mins.toFixed(1) + ' / ' + S.goal, 'min falando hoje'],
+    [streak() + ' 🔥', 'dias seguidos'],
+    [(totalSpeak / 3600).toFixed(1) + 'h', 'total falando'],
+    [t.reviews, 'revisões hoje'],
+    [cards.length, 'cartões'],
+    [errorsBank.length, 'erros catalogados']
+  ].map(([n, l]) => `<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+  const days = []; for(let i = 6; i >= 0; i--){ const d = new Date(); d.setDate(d.getDate() - i); days.push(d); }
+  const vals = days.map(d => ((stats[dayKey(d)] || {}).speak || 0) / 60);
+  const max = Math.max(S.goal, ...vals);
+  $('#bars').innerHTML = days.map((d, i) => `<div class="b ${vals[i] >= S.goal ? 'goal' : ''}"><span>${vals[i] ? vals[i].toFixed(0) : ''}</span><i style="height:${(vals[i] / max) * 80}%"></i><span>${'DSTQQSS'[d.getDay()]}</span></div>`).join('');
+  const top = errorsBank.slice().sort((a,b) => b.count - a.count || b.last - a.last).slice(0, 12);
+  $('#topErrors').innerHTML = top.length
+    ? top.map(e => `<div class="errrow"><div><span class="bad">${esc(e.wrong)}</span> → <b>${esc(e.right)}</b><div class="small muted">${esc(e.why)}</div></div><span class="cnt">${e.count}x</span></div>`).join('')
+    : '<div class="muted small">Converse com o carrasco e seus erros aparecem aqui.</div>';
+}
+function renderPill(){
+  const m = today().speak / 60, p = $('#todayPill');
+  p.textContent = '🎙 ' + (m < 10 ? m.toFixed(1) : Math.round(m)) + '/' + S.goal + ' min';
+  p.classList.toggle('ok', m >= S.goal);
+}
+
+/* ================= Settings ================= */
+function renderModelSelect(){
+  const sel = $('#modelSelect');
+  const list = (modelsCache || []).slice().sort((a,b) => rankModel(b) - rankModel(a));
+  if(S.model && !list.includes(S.model)) list.unshift(S.model);
+  sel.innerHTML = '<option value="">Automático</option>' + list.map(m => `<option value="${esc(m)}" ${m === S.model ? 'selected' : ''}>${esc(m)}</option>`).join('');
+}
+function renderVoiceSelect(){
+  const sel = $('#voiceSelect'); if(!sel) return;
+  const best = TTS.best();
+  sel.innerHTML = TTS.voices.length
+    ? TTS.voices.map(v => `<option value="${esc(v.voiceURI)}" ${best && v.voiceURI === best.voiceURI ? 'selected' : ''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('')
+    : '<option>Voz padrão do sistema</option>';
+}
+function renderSettings(){
+  $('#keyInput').value = S.apiKey;
+  $('#keyStatus').textContent = S.apiKey ? '✔ Chave salva' + (S.model ? ' · modelo: ' + S.model : '') : 'Nenhuma chave salva';
+  $('#goalInput').value = S.goal;
+  $('#rateInput').value = S.rate; $('#rateVal').textContent = (+S.rate).toFixed(2) + 'x';
+  document.querySelectorAll('#modeChips .chip').forEach(c => c.classList.toggle('on', c.dataset.mode === S.mode));
+  renderModelSelect(); renderVoiceSelect();
+}
+$('#saveKeyBtn').addEventListener('click', async () => {
+  const k = $('#keyInput').value.trim();
+  if(!k){ toast('Cole a chave primeiro'); return; }
+  S.apiKey = k; S.model = ''; saveSettings();
+  $('#keyStatus').innerHTML = '<span class="spin"></span> Testando...';
+  try{
+    await listModels();
+    await gemini([{ role:'user', parts:[{ text:'Reply with exactly: OK' }] }], { temperature:0 });
+    $('#keyStatus').textContent = '✔ Funcionando · modelo: ' + S.model;
+    renderModelSelect(); updateSetupCard();
+    toast('Chave funcionando. Bora treinar!');
+  }catch(e){ $('#keyStatus').textContent = '✖ ' + friendly(e); }
+});
+$('#modelSelect').addEventListener('change', e => { S.model = e.target.value; saveSettings(); toast(S.model ? 'Modelo: ' + S.model : 'Modelo automático'); });
+$('#modeChips').addEventListener('click', e => { const c = e.target.closest('[data-mode]'); if(!c) return; S.mode = c.dataset.mode; saveSettings(); renderSettings(); });
+$('#goalInput').addEventListener('change', e => { S.goal = Math.max(1, Math.min(120, +e.target.value || 10)); saveSettings(); renderPill(); });
+$('#rateInput').addEventListener('input', e => { S.rate = +e.target.value; $('#rateVal').textContent = S.rate.toFixed(2) + 'x'; saveSettings(); });
+$('#voiceSelect').addEventListener('change', e => { S.voiceURI = e.target.value; saveSettings(); });
+$('#testVoiceBtn').addEventListener('click', () => TTS.speak(S.mode === 'gentil' ? 'Hi Thiago! Ready to practice your English today?' : 'Listen up, Thiago. Your English is a damn mess, and we are going to fix it today.'));
+$('#exportBtn').addEventListener('click', async () => {
+  const data = JSON.stringify({ v:1, exported: new Date().toISOString(), settings: Object.assign({}, S, { apiKey:'' }), cards, errors: errorsBank, stats });
+  try{ await navigator.clipboard.writeText(data); toast('Backup copiado. Cole nas suas Notas.'); }
+  catch(e){ $('#importArea').style.display = ''; $('#importArea').value = data; $('#importArea').select(); toast('Copie o texto do campo abaixo'); }
+});
+$('#importBtn').addEventListener('click', () => {
+  const a = $('#importArea');
+  if(a.style.display === 'none' || !a.value.trim()){ a.style.display = ''; a.value = ''; a.focus(); toast('Cole o backup e toque em Restaurar de novo'); return; }
+  try{
+    const d = JSON.parse(a.value);
+    if(!Array.isArray(d.cards)) throw 0;
+    cards = d.cards; errorsBank = d.errors || []; stats = d.stats || {};
+    S = Object.assign({}, DEFAULTS, d.settings || {}, { apiKey: S.apiKey });
+    saveCards(); saveErrors(); saveStats(); saveSettings();
+    a.value = ''; a.style.display = 'none'; renderSettings(); renderPill(); toast('Backup restaurado');
+  }catch(e){ toast('Backup inválido'); }
+});
+let wipeArmed = false;
+$('#wipeBtn').addEventListener('click', e => {
+  if(!wipeArmed){ wipeArmed = true; e.target.textContent = 'Toque de novo para APAGAR TUDO'; setTimeout(() => { wipeArmed = false; e.target.textContent = 'Apagar todos os dados'; }, 4000); return; }
+  cards = []; errorsBank = []; stats = {}; saveCards(); saveErrors(); saveStats();
+  wipeArmed = false; e.target.textContent = 'Apagar todos os dados'; renderPill(); toast('Dados apagados (a chave continua salva)');
+});
+
+/* ================= Navigation ================= */
+function updateSetupCard(){ $('#setupNeeded').style.display = S.apiKey ? 'none' : ''; }
+function go(tab){
+  if(tab !== 'falar' && Rec.recording){ clearInterval(recTimer); Rec.stop(); setMic('idle', 'Toque para falar'); }
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'v-' + tab));
+  document.querySelectorAll('#tabbar button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  $('#dock').style.display = tab === 'falar' && Conv.active ? '' : 'none';
+  if(tab === 'revisar') renderReview();
+  if(tab === 'progresso') renderProgress();
+  if(tab === 'ajustes') renderSettings();
+  if(tab === 'falar') updateSetupCard();
+  window.scrollTo(0, 0);
+}
+$('#tabbar').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if(b) go(b.dataset.tab); });
+document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if(g) go(g.dataset.go); });
+document.addEventListener('visibilitychange', () => { if(document.hidden && Rec.recording){ clearInterval(recTimer); Rec.stop(); setMic('idle', 'Toque para falar'); } if(!document.hidden){ updateBadge(); renderPill(); } });
+
+/* ================= Init ================= */
+renderScenarios(); renderPill(); updateBadge(); updateSetupCard();
+</script>
+</body>
+</html>
